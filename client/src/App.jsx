@@ -1,15 +1,15 @@
+import { BrowserRouter, Route, Routes } from "react-router";
 import Form from "./pages/Form"
-import Navigation from "./components/Navigation"
 import './App.css'
 
 function App() {
   return (
-    <div className="app-container">
-      <Navigation />
-      <main className="main-content">
-        <Form />
-      </main>
-    </div>
+    <BrowserRouter>
+    <Routes >
+      <Route path="/Form" element={<Form/>} >
+      </Route>
+    </Routes>
+  </BrowserRouter>
   );
 }
 
