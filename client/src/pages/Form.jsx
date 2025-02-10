@@ -1,4 +1,9 @@
+import { useNavigate } from "react-router-dom";
+
 function Form(){
+
+  const nav = useNavigate();
+
   return(
     <>
     <header>
@@ -7,7 +12,7 @@ function Form(){
       </div>
       <h1>CRM System</h1>
       <div class="sidebutton">
-             <button class="loginBtn">Log in</button>
+             <button class="loginBtn" onClick={() => nav("/login")}>Log in</button>
       </div>
     </header>
 
@@ -17,7 +22,7 @@ function Form(){
          <input type="text" placeholder="Email"/>
          <input type="text" placeholder="Product"></input>
          <textarea placeholder="Message" rows = "6"></textarea>
-         <button className="send">Send</button>
+         <button className="send" onClick={() => nav("/confirmation")}>Send</button>
          
        </div>
     </main>
