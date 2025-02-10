@@ -1,14 +1,39 @@
-function Form(){
+import styles from './Form.module.css';
 
-    return(
-        <div className="form">
-           <h2>Form</h2>
-           
-           <input type="text" placeholder="Email"/>
-           <input type="text" placeholder="Product"></input>
-           <textarea placeholder="Message" rows = "10"></textarea>
-           <button className="send">Send</button>
-        </div>
+function Form() {
+  return (
+    <div className={styles.formContainer}>
+      <h2 className={styles.formTitle}>Contact Form</h2>
+      
+      <div className={styles.formGroup}>
+        <input
+          type="email"
+          className={styles.formInput}
+          placeholder="Email"
+          required
+        />
+      </div>
+      
+      <div className={styles.formGroup}>
+        <input
+          type="text"
+          className={styles.formInput}
+          placeholder="Product"
+        />
+      </div>
+      
+      <div className={styles.formGroup}>
+        <textarea
+          className={`${styles.formInput} ${styles.formTextarea}`}
+          placeholder="Message"
+          rows="6"
+        />
+      </div>
+      
+      <button className={styles.submitButton} type="submit">
+        Send Message
+      </button>
+    </div>
     )
 }
 
