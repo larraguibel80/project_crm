@@ -42,6 +42,14 @@ textarea{
   margin-top: 6%;
 }
 
+h1{
+  color: white;
+  margin-left: 38.5%;
+  margin-top: 2%;
+  font-family: Instrument Sans, serif ;
+  font-weight: 100;
+}
+
 h2{
   font-family: Instrument Sans, serif;
   font-weight: 100;
@@ -49,11 +57,16 @@ h2{
   text-align: center;
 }
 
+p{
+  font-family: Instrument Sans, serif;
+  color: white;
+}
+
 
 header{
   display: flex;
+  flex-wrap: wrap;
   padding: 1%;
-  color: white;
   flex-direction: row;
   background-color: #1a365d;
 }
@@ -67,5 +80,47 @@ header{
   width: 90px;
   height: 90px;
   border-radius: 50%;
-  border:#0e1d32 4px solid;
+  border:#b1bccc 4px solid;
+}
+.sidebutton{
+  margin-left: 37%;
+  margin-top: 1.5%;
+}
+
+.loginBtn{
+  background-color: rgb(147, 151, 249);
+  width: 100px;
+  height: 50px;
+  font-family: Instrument Sans, serif;
+  font-size: large;
+  color: white;
+  border: none;
+  border-radius: 2px;
+}
+
+footer{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+
+  justify-content: space-around;
+  padding: 1%;
+  color: white;
+  
+  background-color: #1a365d;
+  margin-top: 3%;
+}
+
+.footer_info{
+  margin-top: 1%;
+  display: flex;
+  flex-direction: row;
+}
+
+.logo{
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border:#b1bccc 4px solid;
+  
 }
