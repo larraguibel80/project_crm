@@ -16,6 +16,13 @@ function Form(){
   };
 
   const handleSubmit = async () => {
+    if(form.email === "" || form.service_product === "" || form.message === ""){
+      console.error("You can not send a form empty");
+      return
+    }
+
+
+
     try{
       const response = await fetch("http://localhost:3000/api/forms", {
         method: "POST",
