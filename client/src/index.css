@@ -1,10 +1,63 @@
-@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400..700;1,400..700&display=swap');
 
 body{
   margin: 0;
 }
 
-.form{
+/*Header som är samma varje sida*/
+
+header{
+  display: flex;
+  flex-wrap: wrap;
+  padding: 1%;
+  flex-direction: row;
+  background-color: #1a365d;
+}
+
+.logoPlacement{
+  display: flex;
+  flex-direction: row;  
+}
+
+.logoPicture{
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border:#b1bccc 4px solid;
+}
+
+.sidebutton{
+  margin-left: 36%;
+  margin-top: 1.5%;
+}
+.sidebutton :hover{
+  background-color: rgba(179, 179, 181, 0.312);
+}
+/*Footer som är samma varje sida*/
+
+footer{
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+
+  justify-content: space-around;
+  padding: 2%;
+  color: white;
+  
+  background-color: #1a365d;
+  margin-top: 3%;
+}
+
+.footer_info{
+  margin-top: 1%;
+  display: flex;
+  flex-direction: row;
+}
+
+
+
+/*Form page*/
+
+.formArea{
   display: flex;
   background-color: #f3f3f3;
   border-radius: 8px;
@@ -30,8 +83,7 @@ textarea{
   font-size: 1rem;
   
 }
-
-.send{
+.sendBtn{
   width: 100%;
   padding: 1rem;
   background-color: #1a365d;
@@ -42,85 +94,82 @@ textarea{
   margin-top: 6%;
 }
 
-h1{
-  color: white;
-  margin-left: 38.5%;
-  margin-top: 2%;
-  font-family: Instrument Sans, serif ;
-  font-weight: 100;
-}
-
-h2{
-  font-family: Instrument Sans, serif;
-  font-weight: 100;
-  color: #1a365d;
-  text-align: center;
-}
-
-p{
-  font-family: Instrument Sans, serif;
-  color: white;
+.sendBtn:hover{
+  background-color: rgba(95, 96, 98, 0.667);
 }
 
 
-header{
+
+/*Login Page*/
+
+.loginlogoPlacement{
   display: flex;
-  flex-wrap: wrap;
-  padding: 1%;
-  flex-direction: row;
-  background-color: #1a365d;
+  justify-content: center;
 }
 
-.Logo{
-  display: flex;
-  flex-direction: row;  
-}
-
-.logoPicture{
-  width: 90px;
-  height: 90px;
+.loginLogo{
+  width: 150px;
+  height:150px;
   border-radius: 50%;
   border:#b1bccc 4px solid;
+  align-items: center;
 }
-.sidebutton{
-  margin-left: 37%;
-  margin-top: 1.5%;
+
+.loginArea{
+  display: flex;
+  background-color: #f3f3f3;
+  border-radius: 8px;
+  flex-direction: column;
+  margin-top: 3%;
+  margin-left: 35%;
+  margin-right: 35%;
+  padding: 3%;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
 }
 
 .loginBtn{
   background-color: rgb(147, 151, 249);
   width: 100px;
   height: 50px;
-  font-family: Instrument Sans, serif;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
   font-size: large;
   color: white;
   border: none;
   border-radius: 2px;
 }
 
-footer{
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
 
-  justify-content: space-around;
-  padding: 1%;
+
+
+/*Font styling*/
+
+h1{
   color: white;
-  
-  background-color: #1a365d;
-  margin-top: 3%;
+  margin-left: 37%;
+  margin-top: 2%;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif ;
+  font-weight: 100;
 }
 
-.footer_info{
-  margin-top: 1%;
-  display: flex;
-  flex-direction: row;
+h2{
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-weight: 100;
+  color: #1a365d;
+  text-align: center;
 }
 
-.logo{
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border:#b1bccc 4px solid;
-  
+h3{
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-weight: 100;
+  color: #1a365d;
+  text-align: center;
 }
+
+p{
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  color: white;
+}
+
+
+
+
