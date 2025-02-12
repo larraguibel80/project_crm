@@ -138,7 +138,7 @@ function Form() {
           left: 0;
           width: 100vw;
           height: 100vh;
-          z-index: -1; /* Para que el canvas esté en el fondo */
+          z-index: -1;
         }
       `}</style>
     </>

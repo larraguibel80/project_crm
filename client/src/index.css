@@ -10,7 +10,7 @@ header{
   flex-wrap: wrap;
   padding: 1%;
   flex-direction: row;
-  background-color: #d75a5a;
+  background-color: #1a365d;
 }
 
 .logoPlacement{
@@ -139,7 +139,7 @@ textarea{
   font-size: large;
   color: white;
   border: none;
-  border-radius: 2px;
+  border-radius: 5px;
 }
 
 
