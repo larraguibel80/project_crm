@@ -1,73 +1,148 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-function Form(){
-
+function Form() {
   const nav = useNavigate();
+  const canvasRef = useRef(null); // Referencia al canvas
 
-  const [form, setForm]  = useState({
+  const [form, setForm] = useState({
     email: "",
     service_product: "",
     message: ""
   });
 
   const handleChange = (e) => {
-    setForm({...form, [e.target.name]: e.target.value});
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async () => {
-    if(form.email === "" || form.service_product === "" || form.message === ""){
-      console.error("You can not send a form empty");
-      return
+    if (form.email === "" || form.service_product === "" || form.message === "") {
+      console.error("You cannot send an empty form");
+      return;
     }
 
-
-
-    try{
+    try {
       const response = await fetch("http://localhost:3000/api/forms", {
         method: "POST",
-        headers:{
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(form)
-    });
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
 
-    if (response.ok) {
-      console.log("Form sent!")
-      nav("/confirmation")
-    } else {
-      console.error("Something went wrong!");
+      if (response.ok) {
+        console.log("Form sent!");
+        nav("/confirmation");
+      } else {
+        console.error("Something went wrong!");
+      }
+    } catch (error) {
+      console.error("Wrong connection with server", error);
     }
-  } catch(error) {
-    console.error("Wrong connection with server", error)
-  }};
+  };
 
-  return(
+  // 🎨 Dibujar el fondo en el canvas
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const circles = [];
+    const numCircles = 50;
+
+    // Crear círculos aleatorios
+    for (let i = 0; i < numCircles; i++) {
+      circles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 50 + 10,
+        dx: Math.random() * 2 - 1,
+        dy: Math.random() * 2 - 1,
+        color: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`
+      });
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      circles.forEach((circle) => {
+        ctx.beginPath();
+        ctx.arc(circle.x, circle.y, circle.radius, 0, Math.PI * 2);
+        ctx.fillStyle = circle.color;
+        ctx.fill();
+        
+        // Movimiento
+        circle.x += circle.dx;
+        circle.y += circle.dy;
+
+        // Rebotar en los bordes
+        if (circle.x + circle.radius > canvas.width || circle.x - circle.radius < 0) {
+          circle.dx *= -1;
+        }
+        if (circle.y + circle.radius > canvas.height || circle.y - circle.radius < 0) {
+          circle.dy *= -1;
+        }
+      });
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+    
+    // Redimensionar el canvas cuando cambia el tamaño de la ventana
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return (
     <>
-    <header>
-      <div className="logoPlacement">
-          <img className="logoPicture" src="https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?t=st=1739194345~exp=1739197945~hmac=c1020f36982eb3b68289d6519c9cfe6eef14dd88a25eadaf2b45cf453eea3d25&w=740"/>
-      </div>
-      <h1>CRM System</h1>
-      <div className="sidebutton">
-             <button className="loginBtn" onClick={() => nav("/login")}>Log in</button>
-      </div>
-    </header>
+      {/* 🎨 Canvas en el fondo */}
+      <canvas ref={canvasRef} className="canvas-bg"></canvas>
 
-    <main>
-       <div className="formArea">
-         <h2>Contact Form</h2>
-         <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange}/>
-         <input type="text" name="service_product" placeholder="Product" value={form.service_product} onChange={handleChange}></input>
-         <textarea placeholder="Message" name="message" rows = "6" value={form.message} onChange={handleChange}></textarea>
-         <button className="sendBtn" onClick={handleSubmit}>Send</button>
-       </div>
-    </main>
+      <header>
+        <div className="logoPlacement">
+          <img className="logoPicture" src="https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?t=st=1739194345~exp=1739197945~hmac=c1020f36982eb3b68289d6519c9cfe6eef14dd88a25eadaf2b45cf453eea3d25&w=740" />
+        </div>
+        <h1>CRM System</h1>
+        <div className="sidebutton">
+          <button className="loginBtn" onClick={() => nav("/login")}>Log in</button>
+        </div>
+      </header>
 
-    <footer>
-      <p> &copy; 2025 CRM System. All rights reserved.</p>
-    </footer>
+      <main>
+        <div className="formArea">
+          <h2>Contact Form</h2>
+          <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange} />
+          <input type="text" name="service_product" placeholder="Product" value={form.service_product} onChange={handleChange} />
+          <textarea placeholder="Message" name="message" rows="6" value={form.message} onChange={handleChange}></textarea>
+          <button className="sendBtn" onClick={handleSubmit}>Send</button>
+        </div>
+      </main>
+
+      <footer>
+        <p> &copy; 2025 CRM System. All rights reserved.</p>
+      </footer>
+
+      {/* Estilos adicionales */}
+      <style>{`
+        .canvas-bg {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          z-index: -1; /* Para que el canvas esté en el fondo */
+        }
+      `}</style>
     </>
-  )
+  );
 }
-export default Form
+
+export default Form;
