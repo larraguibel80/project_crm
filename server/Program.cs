@@ -4,7 +4,7 @@ using server;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors();
+//builder.Services.AddCors();
 
 var app = builder.Build();
 
@@ -12,11 +12,11 @@ Database database = new Database();
 NpgsqlDataSource db = database.Connection();
 
 
-app.UseCors(policy =>
+/*app.UseCors(policy =>
     policy.AllowAnyOrigin()
         .AllowAnyMethod()
         .AllowAnyHeader()
-);
+);*/
 
 app.MapGet("/api", () => "Hello World!");
 app.MapGet("/api/formlist", () => GetForms());
@@ -52,6 +52,11 @@ async Task<List<Form>> GetForms()
 
 async Task AddForm(string email, string service_product, string message)
 {
+    if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(service_product)  || string.IsNullOrWhiteSpace(message))
+    {
+        Console.WriteLine("Cannot send with empty information");
+        return;
+    }
     await using var cmd =
         db.CreateCommand("INSERT INTO forms (email, service_product, message) VALUES (@email, @service_product, @message)");
         
