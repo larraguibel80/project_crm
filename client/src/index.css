@@ -1,6 +1,17 @@
 
 body{
   margin: 0;
+  overflow: hidden;
+}
+
+.canvas-bg {
+  background: #30E8BF; 
+  background: -webkit-linear-gradient(to bottom, #FF8235, #30E8BF); 
+  background: linear-gradient(to bottom, #FF8235, #30E8BF);
+}
+
+.navbar {
+  background-color: transparent;
 }
 
 /*Header som är samma varje sida*/
@@ -20,7 +31,6 @@ header{
 
 .logoPicture{
   width: 90px;
-  height: 90px;
   border-radius: 50%;
   border:#b1bccc 4px solid;
 }
@@ -62,7 +72,9 @@ footer{
 
 .formArea{
   display: flex;
-  background-color: #f3f3f3;
+  background: #e65c00;
+  background: -webkit-linear-gradient(to bottom, #F9D423, #e65c00);
+  background: linear-gradient(to bottom, #F9D423, #e65c00); 
   border-radius: 8px;
   flex-direction: column;
   margin-top: 2%;
@@ -70,6 +82,7 @@ footer{
   margin-right: 25%;
   padding: 2%;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  gap: 20px;
 }
 
 input{

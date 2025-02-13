@@ -60,7 +60,8 @@ function Form() {
         radius: Math.random() * 50 + 10,
         dx: Math.random() * 2 - 1,
         dy: Math.random() * 2 - 1,
-        color: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`
+        color: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5
+        )`
       });
     }
 
@@ -105,16 +106,6 @@ function Form() {
     <>
       {/* 🎨 Canvas en el fondo */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
-
-      <header>
-        <div className="logoPlacement">
-          <img className="logoPicture" src="https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?t=st=1739194345~exp=1739197945~hmac=c1020f36982eb3b68289d6519c9cfe6eef14dd88a25eadaf2b45cf453eea3d25&w=740" />
-        </div>
-        <h1>CRM System</h1>
-        <div className="sidebutton">
-          <button className="loginBtn" onClick={() => nav("/login")}>Log in</button>
-        </div>
-      </header>
 
       <main>
         <div className="formArea">
