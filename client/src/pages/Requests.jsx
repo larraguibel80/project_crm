@@ -1,11 +1,12 @@
-import { useNavigate } from "react-router-dom";
-import { useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";  // Make sure this import is included
+import { useRef, useState, useEffect } from "react";
 
 function Requests() {
   const nav = useNavigate();
-  const canvasRef = useRef(null); // Referencia al canvas
+  const canvasRef = useRef(null); // Reference to the canvas
+  const [forms, setForms] = useState([]); // State to store fetched forms
 
-  // 🎨 Efecto de fondo con ondas dinámicas
+  // 🎨 Background effect with dynamic waves
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -17,7 +18,7 @@ function Requests() {
     const numWaves = 5;
     const colors = ["rgba(255, 255, 255, 0.3)", "rgba(255, 255, 255, 0.2)", "rgba(255, 255, 255, 0.15)"];
 
-    // Crear ondas iniciales
+    // Create initial waves
     for (let i = 0; i < numWaves; i++) {
       waves.push({
         y: Math.random() * canvas.height,
@@ -45,7 +46,7 @@ function Requests() {
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // Animación de ondas
+        // Animate waves
         wave.phase += wave.speed;
       });
 
@@ -63,9 +64,28 @@ function Requests() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Fetch the forms from the backend
+  useEffect(() => {
+    const fetchForms = async () => {
+      try {
+        const response = await fetch("/api/formlist");  // Make sure your backend is serving this endpoint
+        if (response.ok) {
+          const data = await response.json();
+          setForms(data); // Store the fetched forms in the state
+        } else {
+          console.error("Failed to fetch forms");
+        }
+      } catch (error) {
+        console.error("Error fetching forms:", error);
+      }
+    };
+
+    fetchForms(); // Call the function on component mount
+  }, []); // Empty dependency array to run only once when the component is mounted
+
   return (
     <>
-      {/* 🎨 Canvas de fondo con ondas dinámicas */}
+      {/* 🎨 Canvas background with dynamic waves */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
 
       <header>
@@ -76,11 +96,27 @@ function Requests() {
             alt="Logo"
           />
         </div>
-        <h1>CRM System</h1>
+        <h1>CRM System - Form Requests</h1>
       </header>
 
       <main>
-        {/* Espacio para el contenido */}
+        {/* Display the fetched forms */}
+        {forms.length === 0 ? (
+          <p>No forms submitted yet.</p>
+        ) : (
+          <div>
+            <h2>Submitted Forms</h2>
+            <ul>
+              {forms.map((form, index) => (
+                <li key={index}>
+                  <p>Email: {form.email}</p>
+                  <p>Product: {form.service_product}</p>
+                  <p>Message: {form.message}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </main>
 
       <footer>

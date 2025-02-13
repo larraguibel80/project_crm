@@ -4,9 +4,23 @@ using server;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Services.AddCors();
+// Enable CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
+
+app.UseCors("AllowAll");
+
+// Other code remains the same...
+
 
 Database database = new Database();
 NpgsqlDataSource db = database.Connection();
@@ -29,25 +43,29 @@ app.MapPost("/api/forms", async (Form form) =>
 
 
 
+// Function to retrieve forms from the database
 async Task<List<Form>> GetForms()
 {
     var forms = new List<Form>();
+
     await using var cmd = db.CreateCommand("SELECT * FROM forms");
     await using (var reader = await cmd.ExecuteReaderAsync())
     {
         while (await reader.ReadAsync())
         {
             forms.Add(new Form(
-                reader.GetInt32(0),
-                reader.GetString(1),
-                reader.GetString(2),
-                reader.GetString(3)
-                
+                reader.GetInt32(0),  // ID
+                reader.GetString(1),  // Email
+                reader.GetString(2),  // Product/Service
+                reader.GetString(3)   // Message
             ));
         }
     }
-    Console.WriteLine(forms[0]);
-    return forms;
+
+    // Log for debugging
+    Console.WriteLine(forms.Count > 0 ? forms[0].ToString() : "No forms found.");
+
+    return forms;  // Return the list of forms
 }
 
 async Task AddForm(string email, string service_product, string message)
