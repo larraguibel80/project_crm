@@ -3,9 +3,9 @@ import { useRef, useEffect } from "react";
 
 function ChatList() {
   const nav = useNavigate();
-  const canvasRef = useRef(null); // Referencia al canvas
+  const canvasRef = useRef(null); // Reference to the canvas
 
-  // 🎨 Efecto de fondo con cuadrados flotantes
+  // Background effect with floating squares
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -16,7 +16,7 @@ function ChatList() {
     const squares = [];
     const numSquares = 50;
 
-    // Crear cuadrados
+    // Create squares
     for (let i = 0; i < numSquares; i++) {
       squares.push({
         x: Math.random() * canvas.width,
@@ -25,8 +25,8 @@ function ChatList() {
         maxSize: Math.random() * 40 + 20,
         growSpeed: Math.random() * 0.1 + 0.05,
         alpha: Math.random() * 0.5 + 0.3,
-        rotation: Math.random() * 360, // Rotación inicial
-        rotationSpeed: Math.random() * 2 - 1, // Velocidad de rotación
+        rotation: Math.random() * 360, // Initial rotation
+        rotationSpeed: Math.random() * 2 - 1, // Rotation speed
       });
     }
 
@@ -34,9 +34,9 @@ function ChatList() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       squares.forEach((sq) => {
-        ctx.save(); // Guardar el contexto
+        ctx.save(); // Save the context
 
-        // Mover el centro de rotación al cuadrado
+        // Move the rotation center to the square
         ctx.translate(sq.x + sq.size / 2, sq.y + sq.size / 2);
         ctx.rotate((sq.rotation * Math.PI) / 180);
         ctx.translate(-sq.x - sq.size / 2, -sq.y - sq.size / 2);
@@ -47,14 +47,14 @@ function ChatList() {
         ctx.fillStyle = `rgba(255, 255, 255, ${sq.alpha})`;
         ctx.fill();
 
-        ctx.restore(); // Restaurar el contexto
+        ctx.restore(); // Restore the context
 
         // Animaciones
         sq.size += sq.growSpeed;
         sq.rotation += sq.rotationSpeed;
 
         if (sq.size > sq.maxSize || sq.size < 10) {
-          sq.growSpeed *= -1; // Invertir la dirección de crecimiento
+          sq.growSpeed *= -1; // Reverse the growth direction
         }
       });
 
@@ -74,22 +74,13 @@ function ChatList() {
 
   return (
     <>
-      {/* 🎨 Canvas de fondo con cuadrados flotantes */}
+      {/* Background canvas with floating squares */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
 
-      <header>
-        <div className="Logo">
-          <img
-            className="logoPicture"
-            src="https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?t=st=1739194345~exp=1739197945~hmac=c1020f36982eb3b68289d6519c9cfe6eef14dd88a25eadaf2b45cf453eea3d25&w=740"
-            alt="Logo"
-          />
-        </div>
-        <h1>CRM Chatlist</h1>
-      </header>
+      
 
       <main>
-        {/* Espacio para el contenido */}
+       
       </main>
 
       <footer>
@@ -104,7 +95,9 @@ function ChatList() {
           width: 100vw;
           height: 100vh;
           z-index: -1;
-          background: #1c1c1c;
+          background: #000046; 
+          background: -webkit-linear-gradient(to bottom, #1CB5E0, #000046); 
+          background: linear-gradient(to bottom, #1CB5E0, #000046); 
         }
       `}</style>
     </>

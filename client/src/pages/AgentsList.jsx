@@ -77,22 +77,11 @@ function AgentsList() {
 
   return (
     <>
-      {/* 🎨 Canvas de fondo con triángulos flotantes */}
+      {/* Background canvas with floating squares */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
 
-      <header>
-        <div className="Logo">
-          <img
-            className="logoPicture"
-            src="https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?t=st=1739194345~exp=1739197945~hmac=c1020f36982eb3b68289d6519c9cfe6eef14dd88a25eadaf2b45cf453eea3d25&w=740"
-            alt="Logo"
-          />
-        </div>
-        <h1>CRM Chatlist</h1>
-      </header>
-
       <main>
-        {/* Espacio para el contenido */}
+        
       </main>
 
       <footer>
@@ -107,7 +96,9 @@ function AgentsList() {
           width: 100vw;
           height: 100vh;
           z-index: -1;
-          background: #1c1c1c;
+          background: #1f4037;
+          background: -webkit-linear-gradient(to bottom, #99f2c8, #1f4037);
+          background: linear-gradient(to bottom, #99f2c8, #1f4037);
         }
       `}</style>
     </>

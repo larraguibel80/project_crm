@@ -68,17 +68,6 @@ function Requests() {
       {/* 🎨 Canvas de fondo con ondas dinámicas */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
 
-      <header>
-        <div className="Logo">
-          <img
-            className="logoPicture"
-            src="https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?t=st=1739194345~exp=1739197945~hmac=c1020f36982eb3b68289d6519c9cfe6eef14dd88a25eadaf2b45cf453eea3d25&w=740"
-            alt="Logo"
-          />
-        </div>
-        <h1>CRM System</h1>
-      </header>
-
       <main>
         {/* Espacio para el contenido */}
       </main>
@@ -95,7 +84,9 @@ function Requests() {
           width: 100vw;
           height: 100vh;
           z-index: -1;
-          background: #1c1c1c;
+          background: #03001e; 
+          background: -webkit-linear-gradient(to bottom, #fdeff9, #ec38bc, #7303c0, #03001e);
+          background: linear-gradient(to bottom, #fdeff9, #ec38bc, #7303c0, #03001e); 
         }
       `}</style>
     </>

@@ -80,20 +80,6 @@ function Login() {
       {/* 🎨 Canvas de fondo */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
 
-      <header>
-        <div className="Logo">
-          <img
-            className="logoPicture"
-            src="https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg"
-            alt="Logo"
-          />
-        </div>
-        <h1>CRM System</h1>
-        <div className="sidebutton">
-          <button className="loginBtn">Log in</button>
-        </div>
-      </header>
-
       <main>
         <div className="loginArea">
           <div className="loginlogoPlacement">
@@ -121,7 +107,9 @@ function Login() {
           width: 100vw;
           height: 100vh;
           z-index: -1;
-          background: linear-gradient(135deg, #1e3c72, #2a5298);
+          background: #00c3ff; 
+          background: -webkit-linear-gradient(to bottom, #ffff1c, #00c3ff); 
+          background: linear-gradient(to bottom, #ffff1c, #00c3ff); 
         }
       `}</style>
     </>
