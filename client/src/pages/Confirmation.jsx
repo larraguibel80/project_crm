@@ -74,9 +74,9 @@ function Confirmation() {
             />
           </div>
           <h2>Thank you for reaching out!</h2>
-          <h3>
+          <h4>
             We have received your message and will get back to you as soon as possible. Best regards,
-          </h3>
+          </h4>
           <button className="sendBtn" onClick={() => nav("/")}>
             Go Back
           </button>
