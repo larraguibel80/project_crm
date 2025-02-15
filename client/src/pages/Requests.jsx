@@ -24,7 +24,14 @@ function Requests() {
     fetchForms();
   }, []);
 
-  // 🟢 Add styling objects HERE, before return
+  // 🟢 Function to handle "Join" button click
+  const handleJoinChat = (form) => {
+    console.log(`Joining chat with ${form.email}`);
+    // Navigate to chat page (modify if needed)
+    nav(`/chat?email=${encodeURIComponent(form.email)}`);
+  };
+
+  // 🟢 Table Styling
   const tableHeaderStyle = {
     padding: "10px",
     border: "1px solid #ddd",
@@ -44,6 +51,15 @@ function Requests() {
 
   const tableRowOdd = {
     background: "white",
+  };
+
+  const buttonStyle = {
+    padding: "6px 12px",
+    backgroundColor: "#4CAF50",
+    color: "white",
+    border: "none",
+    cursor: "pointer",
+    borderRadius: "4px",
   };
 
   return (
@@ -73,6 +89,7 @@ function Requests() {
                   <th style={tableHeaderStyle}>Email</th>
                   <th style={tableHeaderStyle}>Product</th>
                   <th style={tableHeaderStyle}>Message</th>
+                  <th style={tableHeaderStyle}>Join Chat</th>  {/* 🟢 New Column */}
                 </tr>
               </thead>
               <tbody>
@@ -81,6 +98,11 @@ function Requests() {
                     <td style={tableCellStyle}>{form.email}</td>
                     <td style={tableCellStyle}>{form.service_product}</td>
                     <td style={tableCellStyle}>{form.message}</td>
+                    <td style={tableCellStyle}>
+                      <button style={buttonStyle} onClick={() => handleJoinChat(form)}>
+                        Join
+                      </button>
+                    </td> 
                   </tr>
                 ))}
               </tbody>
