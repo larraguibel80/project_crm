@@ -24,14 +24,14 @@ function Requests() {
     fetchForms();
   }, []);
 
-  // 🟢 Function to handle "Join" button click
+  //  Function to handle "Join" button click
   const handleJoinChat = (form) => {
     console.log(`Joining chat with ${form.email}`);
-    // Navigate to chat page (modify if needed)
+    // Navigate to chat page 
     nav(`/chat?email=${encodeURIComponent(form.email)}`);
   };
 
-  // 🟢 Table Styling
+  //  Table Styling
   const tableHeaderStyle = {
     padding: "10px",
     border: "1px solid #ddd",
@@ -89,7 +89,7 @@ function Requests() {
                   <th style={tableHeaderStyle}>Email</th>
                   <th style={tableHeaderStyle}>Product</th>
                   <th style={tableHeaderStyle}>Message</th>
-                  <th style={tableHeaderStyle}>Join Chat</th>  {/* 🟢 New Column */}
+                  <th style={tableHeaderStyle}>Join Chat</th>  {/*join chat col */}
                 </tr>
               </thead>
               <tbody>
