@@ -1,77 +1,18 @@
-import { useNavigate } from "react-router-dom";  // Make sure this import is included
+import { useNavigate } from "react-router-dom";  
 import { useRef, useState, useEffect } from "react";
 
 function Requests() {
   const nav = useNavigate();
-  const canvasRef = useRef(null); // Reference to the canvas
-  const [forms, setForms] = useState([]); // State to store fetched forms
+  const canvasRef = useRef(null);
+  const [forms, setForms] = useState([]);
 
-  // 🎨 Background effect with dynamic waves
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    let waves = [];
-    const numWaves = 5;
-    const colors = ["rgba(255, 255, 255, 0.3)", "rgba(255, 255, 255, 0.2)", "rgba(255, 255, 255, 0.15)"];
-
-    // Create initial waves
-    for (let i = 0; i < numWaves; i++) {
-      waves.push({
-        y: Math.random() * canvas.height,
-        amplitude: Math.random() * 50 + 50,
-        wavelength: Math.random() * 100 + 50,
-        speed: Math.random() * 0.02 + 0.01,
-        phase: Math.random() * Math.PI * 2,
-        color: colors[i % colors.length],
-      });
-    }
-
-    function drawWaves() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      waves.forEach((wave, index) => {
-        ctx.beginPath();
-        ctx.moveTo(0, wave.y);
-
-        for (let x = 0; x < canvas.width; x++) {
-          const y = wave.y + Math.sin(x / wave.wavelength + wave.phase) * wave.amplitude;
-          ctx.lineTo(x, y);
-        }
-
-        ctx.strokeStyle = wave.color;
-        ctx.lineWidth = 2;
-        ctx.stroke();
-
-        // Animate waves
-        wave.phase += wave.speed;
-      });
-
-      requestAnimationFrame(drawWaves);
-    }
-
-    drawWaves();
-
-    const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  // Fetch the forms from the backend
   useEffect(() => {
     const fetchForms = async () => {
       try {
-        const response = await fetch("/api/formlist");  // Make sure your backend is serving this endpoint
+        const response = await fetch("/api/formlist");
         if (response.ok) {
           const data = await response.json();
-          setForms(data); // Store the fetched forms in the state
+          setForms(data);
         } else {
           console.error("Failed to fetch forms");
         }
@@ -80,12 +21,33 @@ function Requests() {
       }
     };
 
-    fetchForms(); // Call the function on component mount
-  }, []); // Empty dependency array to run only once when the component is mounted
+    fetchForms();
+  }, []);
+
+  // 🟢 Add styling objects HERE, before return
+  const tableHeaderStyle = {
+    padding: "10px",
+    border: "1px solid #ddd",
+    textAlign: "left",
+    background: "#333",
+    color: "white",
+  };
+
+  const tableCellStyle = {
+    padding: "10px",
+    border: "1px solid #ddd",
+  };
+
+  const tableRowEven = {
+    background: "#f2f2f2",
+  };
+
+  const tableRowOdd = {
+    background: "white",
+  };
 
   return (
     <>
-      {/* 🎨 Canvas background with dynamic waves */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
 
       <header>
@@ -100,21 +62,29 @@ function Requests() {
       </header>
 
       <main>
-        {/* Display the fetched forms */}
         {forms.length === 0 ? (
           <p>No forms submitted yet.</p>
         ) : (
           <div>
             <h2>Submitted Forms</h2>
-            <ul>
-              {forms.map((form, index) => (
-                <li key={index}>
-                  <p>Email: {form.email}</p>
-                  <p>Product: {form.service_product}</p>
-                  <p>Message: {form.message}</p>
-                </li>
-              ))}
-            </ul>
+            <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px" }}>
+              <thead>
+                <tr>
+                  <th style={tableHeaderStyle}>Email</th>
+                  <th style={tableHeaderStyle}>Product</th>
+                  <th style={tableHeaderStyle}>Message</th>
+                </tr>
+              </thead>
+              <tbody>
+                {forms.map((form, index) => (
+                  <tr key={index} style={index % 2 === 0 ? tableRowEven : tableRowOdd}>
+                    <td style={tableCellStyle}>{form.email}</td>
+                    <td style={tableCellStyle}>{form.service_product}</td>
+                    <td style={tableCellStyle}>{form.message}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </main>
