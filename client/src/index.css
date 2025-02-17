@@ -1,7 +1,6 @@
 
 body{
   margin: 0;
-  overflow: hidden;
 }
 
 .canvas-bg {
@@ -16,13 +15,7 @@ body{
 
 /*Header som är samma varje sida*/
 
-header{
-  display: flex;
-  flex-wrap: wrap;
-  padding: 1%;
-  flex-direction: row;
-  background-color: #1a365d;
-}
+
 
 .logoPlacement{
   display: flex;

@@ -1,9 +1,65 @@
 import { useNavigate } from "react-router-dom";
-import { useRef, useEffect } from "react";
+import { useRef, useState ,useEffect } from "react";
 
 function Requests() {
   const nav = useNavigate();
   const canvasRef = useRef(null); // Referencia al canvas
+  const [forms, setForms] = useState([]);
+
+  useEffect(() => {
+    const fetchForms = async () => {
+      try {
+        const response = await fetch("/api/formlist");
+        if (response.ok) {
+          const data = await response.json();
+          setForms(data);
+        } else {
+          console.error("Failed to fetch forms");
+        }
+      } catch (error) {
+        console.error("Error fetching forms:", error);
+      }
+    };
+
+    fetchForms();
+  }, []);
+
+  const handleJoinChat = (form) => {
+    console.log(`Joining chat with ${form.email}`);
+    // Navigate to chat page 
+    nav(`/chat?email=${encodeURIComponent(form.email)}`);
+  };
+
+  //  Table Styling
+  const tableHeaderStyle = {
+    padding: "10px",
+    border: "1px solid #ddd",
+    textAlign: "left",
+    background: "#333",
+    color: "white",
+  };
+
+  const tableCellStyle = {
+    padding: "10px",
+    border: "1px solid #ddd",
+  };
+
+  const tableRowEven = {
+    background: "#f2f2f2",
+  };
+
+  const tableRowOdd = {
+    background: "white",
+  };
+
+  const buttonStyle = {
+    padding: "6px 12px",
+    backgroundColor: "#4CAF50",
+    color: "white",
+    border: "none",
+    cursor: "pointer",
+    borderRadius: "4px",
+  };
 
   // 🎨 Efecto de fondo con ondas dinámicas
   useEffect(() => {
@@ -69,7 +125,37 @@ function Requests() {
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
 
       <main>
-        {/* Espacio para el contenido */}
+      {forms.length === 0 ? (
+          <p>No forms submitted yet.</p>
+        ) : (
+          <div>
+            <h2>Submitted Forms</h2>
+            <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px" }}>
+              <thead>
+                <tr>
+                  <th style={tableHeaderStyle}>Email</th>
+                  <th style={tableHeaderStyle}>Product</th>
+                  <th style={tableHeaderStyle}>Message</th>
+                  <th style={tableHeaderStyle}>Join Chat</th>  {/*join chat col */}
+                </tr>
+              </thead>
+              <tbody>
+                {forms.map((form, index) => (
+                  <tr key={index} style={index % 2 === 0 ? tableRowEven : tableRowOdd}>
+                    <td style={tableCellStyle}>{form.email}</td>
+                    <td style={tableCellStyle}>{form.service_product}</td>
+                    <td style={tableCellStyle}>{form.message}</td>
+                    <td style={tableCellStyle}>
+                      <button style={buttonStyle} onClick={() => handleJoinChat(form)}>
+                        Join
+                      </button>
+                    </td> 
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </main>
 
       <footer>
