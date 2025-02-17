@@ -35,7 +35,7 @@ function Requests() {
     padding: "10px",
     border: "1px solid #ddd",
     textAlign: "left",
-    background: "#333",
+    background: "#33333380",
     color: "white",
   };
 
@@ -45,11 +45,11 @@ function Requests() {
   };
 
   const tableRowEven = {
-    background: "#f2f2f2",
+    background: "#F2F2F280",
   };
 
   const tableRowOdd = {
-    background: "white",
+    background: "#FFFFFF90",
   };
 
   const buttonStyle = {

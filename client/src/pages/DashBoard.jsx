@@ -70,7 +70,8 @@ function DashBoard() {
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
 
       <main>
-        
+        <h1 className="dashboard_text">Welcome to our CRM-System  <img className="logoPictureDash" src="https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?t=st=1739194345~exp=1739197945~hmac=c1020f36982eb3b68289d6519c9cfe6eef14dd88a25eadaf2b45cf453eea3d25&w=740" /></h1>
+        <h2>We are here to support your operations.</h2>
       </main>
 
       <footer>
