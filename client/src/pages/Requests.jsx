@@ -136,7 +136,7 @@ function Requests() {
                   <th style={tableHeaderStyle}>Email</th>
                   <th style={tableHeaderStyle}>Product</th>
                   <th style={tableHeaderStyle}>Message</th>
-                  <th style={tableHeaderStyle}>Join Chat</th>  {/*join chat col */}
+                  <th style={tableHeaderStyle}>Join Chat</th>
                 </tr>
               </thead>
               <tbody>

@@ -116,6 +116,7 @@ function Form() {
           <button className="sendBtn" onClick={handleSubmit}>Send</button>
         </div>
       </main>
+      <br /><br /><br />
 
       <footer>
         <p> &copy; 2025 CRM System. All rights reserved.</p>
