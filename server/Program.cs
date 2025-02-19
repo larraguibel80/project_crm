@@ -102,5 +102,41 @@ async Task DeleteAgent(int id)
     await cmd.ExecuteNonQueryAsync();
 }
 
+app.MapGet("/api/list", () => GetList());
+
+async Task<List<List>> GetList()
+{
+    var agents = new List<List>();
+    await using var cmd = db.CreateCommand("SELECT * FROM list");
+    await using (var reader = await cmd.ExecuteReaderAsync())
+    {
+        while (await reader.ReadAsync())
+        {
+            agents.Add(new List(
+                reader.GetInt32(0),  // Id
+                reader.GetInt32(1),  // Clients_id
+                reader.GetInt32(2),  // Users_id
+                reader.GetString(3),  // Subject
+                reader.GetString(4),  // Message
+                reader.GetString(5),  // Status
+                reader.GetString(6)   // Priority
+            ));
+        
+        } return agents;
+    }
+}
+
+async Task DeleteList(int id)
+{
+    await using var cmd = db.CreateCommand("DELETE FROM list WHERE id = @id");
+    cmd.Parameters.AddWithValue("@id", id);
+    await cmd.ExecuteNonQueryAsync();
+}
+app.MapDelete("/api/list/{id}", async (int id) =>
+{
+    await DeleteList(id);
+    return Results.Ok(new { message = "Tjänst has been deleted" });
+});
+
 
 app.Run();

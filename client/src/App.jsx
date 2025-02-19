@@ -9,6 +9,7 @@ import DashBoard from "./pages/DashBoard";
 import ChatList from "./pages/ChatList";
 import AgentsList from "./pages/AgentsList";
 import Requests from "./pages/Requests";
+import List from "./pages/List";
 import './App.css';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path="/chatlist" element={<ChatList />}/>
         <Route path="/agentslist" element={<AgentsList />}/>
         <Route path="/requests" element={<Requests />}/>
+        <Route path="/list" element={<List />}/>
         <Route path="/confirmation" element={<Confirmation />} />
       </Routes>
     </BrowserRouter>

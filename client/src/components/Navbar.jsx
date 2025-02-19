@@ -40,6 +40,9 @@ const Navbar = () => {
             <li className="nav-item">
               <Link className="nav-link" to="/confirmation">Confirmation</Link>
             </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/list">List</Link>
+            </li>
           </ul>
         </div>
       </div>
