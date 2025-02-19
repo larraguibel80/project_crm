@@ -62,4 +62,45 @@ async Task AddForm(string email, string service_product, string message)
     await cmd.ExecuteNonQueryAsync();
 }
 
+app.MapGet("/api/agents", async () => await AgentsList.GetAllAgents(db));
+
+app.MapPost("/api/agents", async (AgentsList agent) =>
+{
+    await AddAgent(agent.Firstname, agent.Lastname, agent.Email, agent.Password);
+    return Results.Ok(new { message = "Agent has been added" });
+});
+
+async Task AddAgent(string firstname, string lastname, string email, string password)
+{
+    if (string.IsNullOrWhiteSpace(firstname) || string.IsNullOrWhiteSpace(lastname) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+    {
+        Console.WriteLine("All fields are required");
+        return;
+    }
+    await using var cmd =
+        db.CreateCommand("INSERT INTO agents (firstname, lastname, email, password) VALUES (@firstname, @lastname, @email, @password)");
+
+    cmd.Parameters.AddWithValue("@firstname", firstname);
+    cmd.Parameters.AddWithValue("@lastname", lastname);
+    cmd.Parameters.AddWithValue("@email", email);
+    cmd.Parameters.AddWithValue("@password", password);
+
+    await cmd.ExecuteNonQueryAsync();
+}
+
+// Correct the delete route here
+app.MapDelete("/api/agents/{id}", async (int id) =>
+{
+    await DeleteAgent(id);
+    return Results.Ok(new { message = "Agent has been deleted" });
+});
+
+async Task DeleteAgent(int id)
+{
+    await using var cmd = db.CreateCommand("DELETE FROM agents WHERE id = @id");
+    cmd.Parameters.AddWithValue("@id", id);
+    await cmd.ExecuteNonQueryAsync();
+}
+
+
 app.Run();
