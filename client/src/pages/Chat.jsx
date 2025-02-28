@@ -1,9 +1,79 @@
 import { useNavigate } from "react-router-dom";
-import { useRef, useEffect } from "react";
+import { useRef,useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 
-function ChatList() {
+function Chat() {
   const nav = useNavigate();
   const canvasRef = useRef(null); // Reference to the canvas
+  const {token} = useParams();
+
+  const [message, setMessage] = useState({
+      message: "",
+      username: ""
+    });
+    const [messages, setMessages] = useState([]);
+    
+
+    useEffect(() => {
+      const fetchMessages = async () => {
+        try {
+          const response = await fetch("/api/messages");
+          if (response.ok) {
+            const data = await response.json();
+
+            
+            console.log("Fetched messages", data)
+            setMessages(data);
+          } else {
+            console.error("Failed to fetch messages");
+          }
+        } catch (error) {
+          console.error("Error fetching messages:", error);
+        }
+      };
+  
+      fetchMessages();
+
+      const intervall = setInterval(fetchMessages,2000)
+      return () => clearInterval(intervall);
+    }, []);
+
+    
+
+  
+    const handleChange = (e) => {
+      setMessage({ ...message, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async () => {
+      if (message.message === "") {
+        console.error("You cannot send an empty message");
+        return;
+      }
+  
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(message),
+        });
+  
+        if (response.ok) {
+          console.log("Message sent!");
+          const newMessage = await response.json();
+          setMessages([...messages, newMessage]);
+
+          setMessage({...message,message:""});
+        } else {
+          console.error("Something went wrong!");
+        }
+      } catch (error) {
+        console.error("Wrong connection with server", error);
+      }
+    };
+
 
   // Background effect with floating squares
   useEffect(() => {
@@ -80,6 +150,25 @@ function ChatList() {
       
 
       <main>
+        <div>
+          <h4>Chat</h4>
+          <span>Token: {token}</span>
+          <div className="chatArea">
+
+            <div className="chatRuta">
+              {messages.map((msg,index) => (
+                <h6 key={index}><strong>{msg.username}</strong>: {msg.message}</h6>
+              ))}
+            </div>
+
+            <div className="messageArea">
+              <input type="text" name="username" placeholder="Enter username" value={message.username} onChange={handleChange}/>
+              <input type="message" name="message" placeholder="Write your message here" value={message.message} onChange={handleChange}/>
+              <button onClick={handleSubmit}>Send</button>
+            </div>
+            
+          </div>
+        </div>
        
       </main>
 
@@ -104,4 +193,4 @@ function ChatList() {
   );
 }
 
-export default ChatList;
+export default Chat;

@@ -42,7 +42,7 @@ function List() {
         ctx.rotate((tri.rotation * Math.PI) / 180);
         ctx.translate(-tri.x, -tri.y);
 
-        // Dibujar tri谩ngulo
+        // Dibujar tringulo
         ctx.beginPath();
         ctx.moveTo(tri.x, tri.y - tri.size / 2);
         ctx.lineTo(tri.x - tri.size / 2, tri.y + tri.size / 2);
@@ -163,8 +163,8 @@ function List() {
           height: 100vh;
           z-index: -1;
           background: #1f4037;
-          background: -webkit-linear-gradient(to bottom, #99f2c8, #1f4037);
-          background: linear-gradient(to bottom, #99f2c8, #1f4037);
+          background: -webkit-linear-gradient(to bottom,rgb(255, 130, 52),rgb(234, 183, 15));
+          background: linear-gradient(to bottom,rgb(191, 165, 128),rgb(237, 233, 157));
         }
         main {
           padding: 20px;

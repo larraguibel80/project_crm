@@ -6,7 +6,7 @@ import Form from "./pages/Form";
 import Login from "./pages/Login";
 import Confirmation from "./pages/Confirmation";
 import DashBoard from "./pages/DashBoard";
-import ChatList from "./pages/ChatList";
+import Chat from "./pages/Chat";
 import AgentsList from "./pages/AgentsList";
 import Requests from "./pages/Requests";
 import List from "./pages/List";
@@ -20,7 +20,8 @@ function App() {
         <Route path="/" element={<Form />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<DashBoard />} />
-        <Route path="/chatlist" element={<ChatList />}/>
+        <Route path="/chat" element={<Chat />}/>
+        <Route path="/chat/:token" element={<Chat />}/>
         <Route path="/agentslist" element={<AgentsList />}/>
         <Route path="/requests" element={<Requests />}/>
         <Route path="/list" element={<List />}/>

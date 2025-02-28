@@ -136,6 +136,7 @@ function Requests() {
                   <th style={tableHeaderStyle}>Email</th>
                   <th style={tableHeaderStyle}>Product</th>
                   <th style={tableHeaderStyle}>Message</th>
+                  <th style={tableHeaderStyle}>Created</th>
                   <th style={tableHeaderStyle}>Join Chat</th>
                 </tr>
               </thead>
@@ -145,6 +146,7 @@ function Requests() {
                     <td style={tableCellStyle}>{form.email}</td>
                     <td style={tableCellStyle}>{form.service_product}</td>
                     <td style={tableCellStyle}>{form.message}</td>
+                    <td style={tableCellStyle}>{new Date(form.created).toLocaleString()}</td>
                     <td style={tableCellStyle}>
                       <button style={buttonStyle} onClick={() => handleJoinChat(form)}>
                         Join

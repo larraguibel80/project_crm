@@ -35,7 +35,8 @@ async Task<List<Form>> GetForms()
                 reader.GetInt32(0),
                 reader.GetString(1),
                 reader.GetString(2),
-                reader.GetString(3)
+                reader.GetString(3),
+                reader.GetDateTime(4)
                 
             ));
         }
@@ -53,7 +54,7 @@ async Task AddForm(string email, string service_product, string message)
     }
     
     await using var cmd =
-        db.CreateCommand("INSERT INTO forms (email, service_product, message) VALUES (@email, @service_product, @message)");
+        db.CreateCommand("INSERT INTO forms (email, service_product, message, created) VALUES (@email, @service_product, @message, Now())");
         
     cmd.Parameters.AddWithValue("@email", email);
     cmd.Parameters.AddWithValue("@service_product", service_product);
@@ -138,5 +139,44 @@ app.MapDelete("/api/list/{id}", async (int id) =>
     return Results.Ok(new { message = "Tjänst has been deleted" });
 });
 
+
+app.MapPost("/api/chat", async (Messages message) =>
+{
+    await AddMessage(message.message, message.username);
+    return Results.Ok(new {  message.message, message.username });
+});
+app.MapGet("/api/messages", () => GetMessages());
+
+async Task AddMessage(string message, string username)
+{
+    
+    await using var cmd =
+        db.CreateCommand("INSERT INTO chat (message, username) VALUES (@message,@username)");
+    
+    cmd.Parameters.AddWithValue("@message", message);
+    cmd.Parameters.AddWithValue("@username", username);
+
+    await cmd.ExecuteNonQueryAsync();
+}
+
+
+async Task<List<Messages>> GetMessages()
+{
+    var messages = new List<Messages>();
+    await using var cmd = db.CreateCommand("SELECT * FROM chat");
+    await using (var reader = await cmd.ExecuteReaderAsync())
+    {
+        while (await reader.ReadAsync())
+        {
+            messages.Add(new Messages(
+                reader.GetInt32(0),
+                reader.GetString(1),
+                reader.GetString(2)
+                
+            ));
+        }
+    }
+    return messages;
+}
 
 app.Run();

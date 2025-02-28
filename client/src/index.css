@@ -192,5 +192,45 @@ p{
 }
 
 
+.chatArea{
+  display: flex;
+  background: #0045e6;
+  background: -webkit-linear-gradient(to bottom, #73cbe9, #3c6bd0);
+  background: linear-gradient(to bottom, #48a6f9, #1b14a4); 
+  border-radius: 8px;
+  flex-direction: column;
+  margin-top: 0.5%;
+  margin-left: 25%;
+  margin-right: 25%;
+  padding: 2%;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+  gap: 20px;
+}
 
+.messageArea{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
 
+.messageArea input {
+  flex: 1;
+  padding: 8px;
+}
+
+.messageArea button {
+  padding: 8px;
+  margin-left: 5px;
+}
+
+.chatRuta{
+    height: 350px;
+    background-color: white;
+    border-radius: 5px;
+    overflow-y: auto;
+}
+
+h6{
+  margin-left: 1%;
+  padding: 1%;
+}
