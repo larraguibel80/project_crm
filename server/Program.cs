@@ -1,7 +1,6 @@
 using Npgsql;
 using server;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Enable CORS
@@ -15,16 +14,17 @@ builder.Services.AddCors(options =>
     });
 });
 
+// Add your services before calling Build()
+builder.Services.AddSingleton<EmailService>(); // Move this line up here
+
 var app = builder.Build();
 
 app.UseCors("AllowAll");
 
 // Other code remains the same...
 
-
 Database database = new Database();
 NpgsqlDataSource db = database.Connection();
-
 
 /*app.UseCors(policy =>
     policy.AllowAnyOrigin()
@@ -34,14 +34,32 @@ NpgsqlDataSource db = database.Connection();
 
 app.MapGet("/api", () => "Hello World!");
 app.MapGet("/api/formlist", () => GetForms());
-app.MapPost("/api/forms", async (Form form) =>
+
+app.MapPost("/api/forms", async (Form form, EmailService emailService) =>
 {
+    // Insert form into the database
     await AddForm(form.email, form.service_product, form.message);
-    return Results.Ok(new { message = "Form has been saved" });
+
+    // Prepare email subject and body
+    var subject = "New Form Submission";
+    
+    // Creating the email body with a link (this is the "Join Chat" link part)
+    var body = $@"
+Hello {form.email},
+
+Thank you for your submission! 
+
+To join the chat, click the link below:
+<a href='http://your-app-url.com/chat/{form.email}'>Join Chat</a>
+
+Best regards,
+CRM Team";
+
+    // Send the email
+    emailService.SendEmail(form.email, subject, body);
+
+    return Results.Ok(new { message = "Form has been saved and email sent" });
 });
-
-
-
 
 // Function to retrieve forms from the database
 async Task<List<Form>> GetForms()
@@ -84,6 +102,5 @@ async Task AddForm(string email, string service_product, string message)
 
     await cmd.ExecuteNonQueryAsync();
 }
-
 
 app.Run();
