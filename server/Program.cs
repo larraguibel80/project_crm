@@ -4,6 +4,7 @@ using server;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSingleton<EmailService>();
 
 
 var app = builder.Build();
@@ -14,35 +15,57 @@ NpgsqlDataSource db = database.Connection();
 
 app.MapGet("/api", () => "Hello World!");
 app.MapGet("/api/formlist", () => GetForms());
-app.MapPost("/api/forms", async (Form form) =>
+
+app.MapPost("/api/forms", async (Form form, EmailService emailService) =>
 {
+    // Insert form into the database
     await AddForm(form.email, form.service_product, form.message);
-    return Results.Ok(new { message = "Form has been saved" });
+
+    // Prepare email subject and body
+    var subject = "New Form Submission";
+    
+    // Creating the email body with a link (this is the "Join Chat" link part)
+    var body = $@"
+Hello {form.email},
+
+Thank you for your submission! 
+
+To join the chat, click the link below:
+<a href='http://your-app-url.com/chat/{form.email}'>Join Chat</a>
+
+Best regards,
+CRM Team";
+
+    // Send the email
+    emailService.SendEmail(form.email, subject, body);
+
+    return Results.Ok(new { message = "Form has been saved and email sent" });
 });
 
-
-
-
+// Function to retrieve forms from the database
 async Task<List<Form>> GetForms()
 {
     var forms = new List<Form>();
+
     await using var cmd = db.CreateCommand("SELECT * FROM forms");
     await using (var reader = await cmd.ExecuteReaderAsync())
     {
         while (await reader.ReadAsync())
         {
             forms.Add(new Form(
-                reader.GetInt32(0),
-                reader.GetString(1),
-                reader.GetString(2),
+                reader.GetInt32(0),  // ID
+                reader.GetString(1),  // Email
+                reader.GetString(2),  // Product/Service
                 reader.GetString(3),
-                reader.GetDateTime(4)
-                
+                reader.GetDateTime(4)// Message
             ));
         }
     }
-    Console.WriteLine(forms[0]);
-    return forms;
+
+    // Log for debugging
+    Console.WriteLine(forms.Count > 0 ? forms[0].ToString() : "No forms found.");
+
+    return forms;  // Return the list of forms
 }
 
 async Task AddForm(string email, string service_product, string message)
@@ -52,9 +75,8 @@ async Task AddForm(string email, string service_product, string message)
         Console.WriteLine("Cannot send with empty information");
         return;
     }
-    
     await using var cmd =
-        db.CreateCommand("INSERT INTO forms (email, service_product, message, created) VALUES (@email, @service_product, @message, Now())");
+        db.CreateCommand("INSERT INTO forms (email, service_product, message) VALUES (@email, @service_product, @message)");
         
     cmd.Parameters.AddWithValue("@email", email);
     cmd.Parameters.AddWithValue("@service_product", service_product);

@@ -4,9 +4,12 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MailKit" Version="4.10.0" />
+    <PackageReference Include="MimeKit" Version="4.10.0" />
     <PackageReference Include="Npgsql" Version="9.0.2" />
   </ItemGroup>
 
