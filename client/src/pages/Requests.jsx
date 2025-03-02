@@ -26,8 +26,14 @@ function Requests() {
 
   const handleJoinChat = (form) => {
     console.log(`Joining chat with ${form.email}`);
-    // Navigate to chat page 
-    nav(`/chat?email=${encodeURIComponent(form.email)}`);
+    if (!form.token){
+      console.error("Token do not exist")
+      return;
+    }
+
+    console.log(`Joining specfik chatt: ${form.token}`);
+    nav(`/chat/${form.token}`)
+  
   };
 
   //  Table Styling

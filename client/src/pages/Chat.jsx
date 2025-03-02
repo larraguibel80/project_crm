@@ -17,7 +17,7 @@ function Chat() {
     useEffect(() => {
       const fetchMessages = async () => {
         try {
-          const response = await fetch("/api/messages");
+          const response = await fetch(`/api/messages/${token}`);
           if (response.ok) {
             const data = await response.json();
 
@@ -52,12 +52,12 @@ function Chat() {
       }
   
       try {
-        const response = await fetch("/api/chat", {
+        const response = await fetch(`/api/chat/${token}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(message),
+          body: JSON.stringify(message,token),
         });
   
         if (response.ok) {
