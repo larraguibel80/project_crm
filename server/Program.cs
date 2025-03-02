@@ -18,8 +18,10 @@ app.MapGet("/api/formlist", () => GetForms());
 
 app.MapPost("/api/forms", async (Form form, EmailService emailService) =>
 {
+    var token = Guid.NewGuid();
+    
     // Insert form into the database
-    await AddForm(form.email, form.service_product, form.message);
+    await AddForm(form.email, form.service_product, form.message, token);
 
     // Prepare email subject and body
     var subject = "New Form Submission";
@@ -31,7 +33,7 @@ Hello {form.email},
 Thank you for your submission! 
 
 To join the chat, click the link below:
-<a href='http://your-app-url.com/chat/{form.email}'>Join Chat</a>
+<a href='http://localhost:5179/chat/{token}'>Join Chat</a>
 
 Best regards,
 CRM Team";
@@ -39,7 +41,7 @@ CRM Team";
     // Send the email
     emailService.SendEmail(form.email, subject, body);
 
-    return Results.Ok(new { message = "Form has been saved and email sent" });
+    return Results.Ok(new { message = "Form has been saved and email sent", token });
 });
 
 // Function to retrieve forms from the database
@@ -53,22 +55,22 @@ async Task<List<Form>> GetForms()
         while (await reader.ReadAsync())
         {
             forms.Add(new Form(
-                reader.GetInt32(0),  // ID
-                reader.GetString(1),  // Email
-                reader.GetString(2),  // Product/Service
+                reader.GetInt32(0),  
+                reader.GetString(1), 
+                reader.GetString(2),  
                 reader.GetString(3),
-                reader.GetDateTime(4)// Message
+                reader.GetDateTime(4),
+                reader.GetString(5)
             ));
         }
     }
-
-    // Log for debugging
+    
     Console.WriteLine(forms.Count > 0 ? forms[0].ToString() : "No forms found.");
 
     return forms;  // Return the list of forms
 }
 
-async Task AddForm(string email, string service_product, string message)
+async Task AddForm(string email, string service_product, string message, Guid token)
 {
     if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(service_product)  || string.IsNullOrWhiteSpace(message))
     {
@@ -76,11 +78,12 @@ async Task AddForm(string email, string service_product, string message)
         return;
     }
     await using var cmd =
-        db.CreateCommand("INSERT INTO forms (email, service_product, message) VALUES (@email, @service_product, @message)");
+        db.CreateCommand("INSERT INTO forms (email, service_product, message, token) VALUES (@email, @service_product, @message, @token)");
         
     cmd.Parameters.AddWithValue("@email", email);
     cmd.Parameters.AddWithValue("@service_product", service_product);
     cmd.Parameters.AddWithValue("@message", message);
+    cmd.Parameters.AddWithValue("@token", token);
 
     await cmd.ExecuteNonQueryAsync();
 }
@@ -162,30 +165,33 @@ app.MapDelete("/api/list/{id}", async (int id) =>
 });
 
 
-app.MapPost("/api/chat", async (Messages message) =>
+app.MapPost("/api/chat/{token}", async (string token,Messages message) =>
 {
-    await AddMessage(message.message, message.username);
-    return Results.Ok(new {  message.message, message.username });
+    await AddMessage(message.message, message.username, token);
+    return Results.Ok(new {  message.message, message.username, token });
 });
-app.MapGet("/api/messages", () => GetMessages());
+app.MapGet("/api/messages/{token}", (string token) => GetMessages(token));
 
-async Task AddMessage(string message, string username)
+async Task AddMessage(string message, string username, string token)
 {
     
     await using var cmd =
-        db.CreateCommand("INSERT INTO chat (message, username) VALUES (@message,@username)");
+        db.CreateCommand("INSERT INTO chat (message, username, token) VALUES (@message,@username, @token)");
     
     cmd.Parameters.AddWithValue("@message", message);
     cmd.Parameters.AddWithValue("@username", username);
+    cmd.Parameters.AddWithValue("@token", token);
 
     await cmd.ExecuteNonQueryAsync();
 }
 
 
-async Task<List<Messages>> GetMessages()
+async Task<List<Messages>> GetMessages(string token)
 {
     var messages = new List<Messages>();
-    await using var cmd = db.CreateCommand("SELECT * FROM chat");
+    await using var cmd = db.CreateCommand("SELECT * FROM chat WHERE token = @token");
+    cmd.Parameters.AddWithValue("@token", token);
+    
     await using (var reader = await cmd.ExecuteReaderAsync())
     {
         while (await reader.ReadAsync())
@@ -193,7 +199,8 @@ async Task<List<Messages>> GetMessages()
             messages.Add(new Messages(
                 reader.GetInt32(0),
                 reader.GetString(1),
-                reader.GetString(2)
+                reader.GetString(2),
+                reader.GetString(3)
                 
             ));
         }
