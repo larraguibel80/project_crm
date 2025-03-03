@@ -33,7 +33,7 @@ Hello {form.email},
 Thank you for your submission! 
 
 To join the chat, click the link below:
-<a href='http://localhost:5179/chat/{token}'>Join Chat</a>
+<a href='http://localhost:5184/chat/{token}'>Join Chat</a>
 
 Best regards,
 CRM Team";
@@ -176,7 +176,7 @@ async Task AddMessage(string message, string username, string token)
 {
     
     await using var cmd =
-        db.CreateCommand("INSERT INTO chat (message, username, token) VALUES (@message,@username, @token)");
+        db.CreateCommand("INSERT INTO chat (message, username, form_id ,token) VALUES (@message,@username, (SELECT id FROM forms WHERE token = @token),@token)");
     
     cmd.Parameters.AddWithValue("@message", message);
     cmd.Parameters.AddWithValue("@username", username);
@@ -189,7 +189,7 @@ async Task AddMessage(string message, string username, string token)
 async Task<List<Messages>> GetMessages(string token)
 {
     var messages = new List<Messages>();
-    await using var cmd = db.CreateCommand("SELECT * FROM chat WHERE token = @token");
+    await using var cmd = db.CreateCommand("SELECT * FROM chat WHERE form_id = (SELECT id FROM forms WHERE token = @token)");
     cmd.Parameters.AddWithValue("@token", token);
     
     await using (var reader = await cmd.ExecuteReaderAsync())
