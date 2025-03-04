@@ -21,7 +21,6 @@ function App() {
         <Route path="/" element={<Form />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<DashBoard />} />
-        <Route path="/chat" element={<Chat />}/>
         <Route path="/chat/:token" element={<Chat />}/>
         <Route path="/agentslist" element={<AgentsList />}/>
         <Route path="/requests" element={<Requests />}/>
