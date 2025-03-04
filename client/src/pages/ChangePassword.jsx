@@ -1,7 +1,10 @@
-import { useRef, useEffect } from "react";
+import { useRef, useState ,useEffect } from "react";
 
 function ChangePassword() {
   const canvasRef = useRef(null);
+  const [email, setEmail] = useState("");
+  const [changedPassword, setChangedPassword] = useState("");
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -75,6 +78,24 @@ function ChangePassword() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const handleUpdatePassword = async () => {
+    if(!email || !changedPassword ){
+      setMessage("You need to enter email and your new password");
+      return;
+    } 
+    try {
+      const response = await fetch("/api/agents/password", {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({email, newPassword :changedPassword})
+      });
+
+      const data = await response.json();
+      setMessage(data.message);
+    } catch(error){
+      setMessage("Fail")}
+  };
+
   return (
     <>
       {/* 🎨 Canvas de fondo */}
@@ -89,9 +110,10 @@ function ChangePassword() {
               alt="Login Logo"
             />
           </div>
-          <input type="text" placeholder="Email" />
-          <input type="password" placeholder="New Password" />
-          <button className="sendBtn">Change Password</button>
+          <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+          <input type="password" placeholder="New Password" value={changedPassword} onChange={(e) => setChangedPassword(e.target.value)}/>
+          <button className="sendBtn" onClick={handleUpdatePassword}>Change Password</button>
+          <p>{message}</p>
         </div>
       </main>
 

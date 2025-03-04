@@ -152,7 +152,6 @@ function Chat() {
       <main>
         <div>
           <h4>Chat</h4>
-          <span>Token: {token}</span>
           <div className="chatArea">
 
             <div className="chatRuta">

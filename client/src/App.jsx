@@ -10,6 +10,7 @@ import Chat from "./pages/Chat";
 import AgentsList from "./pages/AgentsList";
 import Requests from "./pages/Requests";
 import List from "./pages/List";
+import ChangePassword from "./pages/ChangePassword";
 import './App.css';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <Route path="/requests" element={<Requests />}/>
         <Route path="/list" element={<List />}/>
         <Route path="/confirmation" element={<Confirmation />} />
+        <Route path="/changepassword" element={<ChangePassword />} />
       </Routes>
     </BrowserRouter>
   );

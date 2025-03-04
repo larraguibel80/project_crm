@@ -33,7 +33,7 @@ Hello {form.email},
 Thank you for your submission! 
 
 To join the chat, click the link below:
-<a href='http://localhost:5184/chat/{token}'>Join Chat</a>
+<a href='http://localhost:4001/chat/{token}'>Join Chat</a>
 
 Best regards,
 CRM Team";
@@ -90,14 +90,33 @@ async Task AddForm(string email, string service_product, string message, Guid to
 
 app.MapGet("/api/agents", async () => await AgentsList.GetAllAgents(db));
 
-app.MapPost("/api/agents", async (AgentsList agent) =>
+app.MapPost("/api/agents", async (AgentsList agent, EmailService emailService) =>
 {
     await AddAgent(agent.Firstname, agent.Lastname, agent.Email, agent.Password);
-    return Results.Ok(new { message = "Agent has been added" });
+    var subject = "New Form Submission";
+    
+    // Creating the email body with a link (this is the "Join Chat" link part)
+    var body = $@"
+Hello {agent.Email},
+
+Welcome to this CRM system! 
+Your current password is: {agent.Password}
+
+If you want to change your password, click the link below:
+<a href='http://localhost:4001/changepassword'>Change Password</a>
+
+Best regards,
+CRM Team";
+
+    // Send the email
+    emailService.SendEmail(agent.Email, subject, body);
+
+    return Results.Ok(new { message = "Form has been saved and email sent"});
 });
 
 async Task AddAgent(string firstname, string lastname, string email, string password)
-{
+{ 
+    
     if (string.IsNullOrWhiteSpace(firstname) || string.IsNullOrWhiteSpace(lastname) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
     {
         Console.WriteLine("All fields are required");
@@ -206,6 +225,23 @@ async Task<List<Messages>> GetMessages(string token)
         }
     }
     return messages;
+}
+app.MapPut("/api/agents/password", async (UpdatePassword request) =>
+{
+    if (string.IsNullOrWhiteSpace(request.email) || string.IsNullOrWhiteSpace(request.newPassword))
+    {
+        return Results.BadRequest(new { message = "Fyll i email och ditt nya lösenord" });
+    }
+    await UpdatePassword(request.email, request.newPassword);
+    return Results.Ok(new { message = "You changed your password!"});
+});
+
+async Task UpdatePassword(string email, string newPassword)
+{
+    await using var cmd = db.CreateCommand("UPDATE agents SET password = @password WHERE  email = @email");
+    cmd.Parameters.AddWithValue("@email", email);
+    cmd.Parameters.AddWithValue("@password", newPassword);
+    await cmd.ExecuteReaderAsync();
 }
 
 app.Run();

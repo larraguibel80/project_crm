@@ -6,7 +6,6 @@ function List() {
   const canvasRef = useRef(null); // Referencia al canvas
   const [list, setList] = useState([]); // State to store the agents data
 
-  // 馃帹 Efecto de fondo con tri谩ngulos flotantes
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -17,7 +16,6 @@ function List() {
     const triangles = [];
     const numTriangles = 50;
 
-    // Crear tri谩ngulos
     for (let i = 0; i < numTriangles; i++) {
       triangles.push({
         x: Math.random() * canvas.width,
@@ -37,7 +35,6 @@ function List() {
       triangles.forEach((tri) => {
         ctx.save(); // Guardar el contexto
 
-        // Mover el centro de rotaci贸n al tri谩ngulo
         ctx.translate(tri.x, tri.y);
         ctx.rotate((tri.rotation * Math.PI) / 180);
         ctx.translate(-tri.x, -tri.y);
@@ -113,7 +110,6 @@ function List() {
 
   return (
     <>
-      {/* 馃帹 Canvas en el fondo */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
   
       <main>
