@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import Navbar from "./components/Navbar";
@@ -12,19 +12,28 @@ import Requests from "./pages/Requests";
 import List from "./pages/List";
 import './App.css';
 
+const PrivateRoute = ({ element, ...rest }) => {
+  const isAuthenticated = localStorage.getItem("userRole");  // Check if user is authenticated
+
+  return isAuthenticated ? element : <Navigate to="/login" />;  // If not authenticated, redirect to login
+};
+
 function App() {
   return (
     <BrowserRouter>
-    <Navbar />
+      <Navbar />
       <Routes>
         <Route path="/" element={<Form />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<DashBoard />} />
-        <Route path="/chat" element={<Chat />}/>
-        <Route path="/chat/:token" element={<Chat />}/>
-        <Route path="/agentslist" element={<AgentsList />}/>
-        <Route path="/requests" element={<Requests />}/>
-        <Route path="/list" element={<List />}/>
+        <Route path="/chat" element={<Chat />} />
+        <Route path="/chat/:token" element={<Chat />} />
+        <Route path="/agentslist" element={<AgentsList />} />
+
+        {/* Protected route for requests */}
+        <Route path="/requests" element={<PrivateRoute element={<Requests />} />} />
+
+        <Route path="/list" element={<List />} />
         <Route path="/confirmation" element={<Confirmation />} />
       </Routes>
     </BrowserRouter>

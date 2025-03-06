@@ -1,16 +1,53 @@
 using Npgsql;
 using server;
+using YourNamespace.Controllers;
+
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container.
 builder.Services.AddSingleton<EmailService>();
+builder.Services.AddHttpContextAccessor(); // Add IHttpContextAccessor
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+// Add authorization services
+builder.Services.AddAuthorization();
+
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
+});
+
+// Add controllers
+builder.Services.AddControllers(); // Add this line to fix the error
 
 
 var app = builder.Build();
 
 Database database = new Database();
 NpgsqlDataSource db = database.Connection();
+app.UseCors("AllowFrontend");
+app.UseSession();
+
+app.UseAuthorization(); // If using authentication
+app.MapControllers();   // If using controllers
 
 
 app.MapGet("/api", () => "Hello World!");
@@ -207,5 +244,55 @@ async Task<List<Messages>> GetMessages(string token)
     }
     return messages;
 }
+
+// ✅ Function to get user from the database
+// Function to get a user from the database
+static User? GetUserFromDatabase(string email, string password)
+{
+    using var conn = new NpgsqlConnection("your_connection_string_here");
+    conn.Open();
+
+    using var cmd = new NpgsqlCommand("SELECT * FROM employees WHERE email = @Email AND password = @Password", conn);
+    cmd.Parameters.AddWithValue("@Email", email);
+    cmd.Parameters.AddWithValue("@Password", password);
+
+    using var reader = cmd.ExecuteReader();
+    return reader.Read() ? new User
+    {
+        Id = reader.GetInt32(0),          // Assuming the ID is the first column in the database
+        FirstName = reader.GetString(1),
+        LastName = reader.GetString(2),
+        Email = reader.GetString(3),
+        Password = reader.GetString(4),
+        Role = reader.GetString(5)
+    } : null;
+}
+
+
+/*app.MapPost("/login", async (HttpContext context) =>
+{
+    context.Response.Headers.Append("Access-Control-Allow-Origin", "http://localhost:5173");
+    context.Response.Headers.Append("Access-Control-Allow-Credentials", "true");
+
+    if (!context.Request.HasFormContentType)
+    {
+        return Results.BadRequest(new { message = "Invalid content type. Expected form data." });
+    }
+
+    var form = await context.Request.ReadFormAsync();
+    var email = form["email"];
+    var password = form["password"];
+
+    var user = GetUserFromDatabase(email, password);
+    
+    if (user == null)
+    {
+        return Results.Json(new { message = "Access Denied: Please log in." }, statusCode: 401);
+    }
+
+    context.Session.SetString("userRole", user.Role);
+    return Results.Json(new { message = "Login successful!" });
+});*/
+
 
 app.Run();

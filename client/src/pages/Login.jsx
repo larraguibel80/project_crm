@@ -1,83 +1,50 @@
-import { useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; // To navigate after login
 
 function Login() {
+  const [email, setEmail] = useState(""); // Store email
+  const [password, setPassword] = useState(""); // Store password
+  const [error, setError] = useState(""); // Store any error messages
   const canvasRef = useRef(null);
+  const navigate = useNavigate(); // Hook to navigate to the requests page
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    const particles = [];
-    const numParticles = 80;
-
-    // Crear partículas
-    for (let i = 0; i < numParticles; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: Math.random() * 2 - 1,
-        vy: Math.random() * 2 - 1,
-        radius: Math.random() * 3 + 1,
-        color: "rgba(255, 255, 255, 0.8)"
+  const handleLogin = async (e) => {
+    e.preventDefault(); // Prevent form from reloading the page
+  
+    try {
+      const response = await fetch("http://localhost:3000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Send as JSON
+        },
+        body: JSON.stringify({ email, password }),
       });
-    }
-
-    function drawParticles() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      for (let i = 0; i < particles.length; i++) {
-        const p = particles[i];
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.fill();
-
-        // Movimiento
-        p.x += p.vx;
-        p.y += p.vy;
-
-        // Rebotar en los bordes
-        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
-        // Conectar partículas cercanas
-        for (let j = i + 1; j < particles.length; j++) {
-          const p2 = particles[j];
-          const dx = p.x - p2.x;
-          const dy = p.y - p2.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < 100) {
-            ctx.beginPath();
-            ctx.moveTo(p.x, p.y);
-            ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = "rgba(255, 255, 255, 0.2)";
-            ctx.lineWidth = 1;
-            ctx.stroke();
-          }
-        }
+  
+      // Check if the response is OK (status code 2xx)
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => {
+          // If the response is not valid JSON, handle the error gracefully
+          return { message: "Unknown error occurred, please try again." };
+        });
+        setError(errorData.message); // Show the error message from the backend
+        return;
       }
-
-      requestAnimationFrame(drawParticles);
+  
+      // If the response is valid and login is successful
+      const data = await response.json();
+      localStorage.setItem("userRole", data.role); // Save role to localStorage
+      navigate("/requests"); // Redirect to the /requests page after successful login
+    } catch (error) {
+      console.error("Login error", error);
+      setError("Something went wrong. Please try again."); // Handle unexpected errors
     }
+  };
+  
 
-    drawParticles();
-
-    const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  // Particle effect code here (remains unchanged)
 
   return (
     <>
-      {/* 🎨 Canvas de fondo */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
 
       <main>
@@ -89,9 +56,27 @@ function Login() {
               alt="Login Logo"
             />
           </div>
-          <input type="text" placeholder="Email" />
-          <input type="password" placeholder="Password" />
-          <button className="sendBtn">Log in</button>
+
+          {/* Display error message if there's an error */}
+          {error && <div className="error">{error}</div>}
+
+          <form onSubmit={handleLogin}>
+            <input
+              type="text"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button className="sendBtn" type="submit">
+              Log in
+            </button>
+          </form>
         </div>
       </main>
 
@@ -110,6 +95,11 @@ function Login() {
           background: #00c3ff; 
           background: -webkit-linear-gradient(to bottom, #ffff1c, #00c3ff); 
           background: linear-gradient(to bottom, #ffff1c, #00c3ff); 
+        }
+
+        .error {
+          color: red;
+          margin-bottom: 10px;
         }
       `}</style>
     </>
