@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-const Navbar = () => {
+const AdminBar = () => {
   return (
     <nav className="navbar">
       <div className="container">
@@ -20,12 +20,17 @@ const Navbar = () => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav">
             <li className="nav-item">
-              <Link className="nav-link" to="/dashboard">Dashboard</Link>
+              <Link className="nav-link" to="/adminpage">Dashboard</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/agentslist">Agents</Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/requests">Requests</Link>
             </li>
-            
+            <li className="nav-item">
+              <Link className="nav-link" to="/list">List</Link>
+            </li>
           </ul>
         </div>
       </div>
@@ -33,4 +38,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default AdminBar;

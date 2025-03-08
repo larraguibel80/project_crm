@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useRef, useEffect } from "react";
+import LoginBar from "../components/LoginBar";
 
 function Confirmation() {
   const nav = useNavigate();
@@ -63,6 +64,7 @@ function Confirmation() {
     <>
       {/* 🎨 Canvas de fondo pulsante */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
+      <LoginBar/>
 
       <main>
         <div className="loginArea">

@@ -1,4 +1,5 @@
 import { useRef, useState ,useEffect } from "react";
+import SettingsBar from "../components/SettingsBar";
 
 function ChangePassword() {
   const canvasRef = useRef(null);
@@ -100,6 +101,8 @@ function ChangePassword() {
     <>
       {/* 🎨 Canvas de fondo */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
+
+      <SettingsBar/>
 
       <main>
         <div className="passwordArea">

@@ -33,7 +33,7 @@ Hello {form.email},
 Thank you for your submission! 
 
 To join the chat, click the link below:
-<a href='http://localhost:4001/chat/{token}'>Join Chat</a>
+<a href='http://localhost:4000/chat/{token}'>Join Chat</a>
 
 Best regards,
 CRM Team";
@@ -103,7 +103,7 @@ Welcome to this CRM system!
 Your current password is: {agent.Password}
 
 If you want to change your password, click the link below:
-<a href='http://localhost:4001/changepassword'>Change Password</a>
+<a href='http://localhost:4000/changepassword'>Change Password</a>
 
 Best regards,
 CRM Team";

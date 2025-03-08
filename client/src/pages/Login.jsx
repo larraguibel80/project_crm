@@ -1,6 +1,9 @@
 import { useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import LoginBar from "../components/LoginBar";
 
 function Login() {
+  const nav = useNavigate();
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -80,6 +83,8 @@ function Login() {
       {/* 🎨 Canvas de fondo */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
 
+      <LoginBar/>
+
       <main>
         <div className="loginArea">
           <div className="loginlogoPlacement">
@@ -91,7 +96,7 @@ function Login() {
           </div>
           <input type="text" placeholder="Email" />
           <input type="password" placeholder="Password" />
-          <button className="sendBtn">Log in</button>
+          <button className="sendBtn" onClick={() => nav("/dashboard")}>Log in</button>
         </div>
       </main>
 

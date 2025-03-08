@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useRef,useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import SettingsBar from "../components/SettingsBar";
 
 function Chat() {
   const nav = useNavigate();
@@ -146,8 +147,8 @@ function Chat() {
     <>
       {/* Background canvas with floating squares */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
-
       
+      <SettingsBar/>
 
       <main>
         <div>

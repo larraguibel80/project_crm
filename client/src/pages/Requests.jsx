@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useRef, useState ,useEffect } from "react";
+import Navbar from "../components/Navbar";
 
 function Requests() {
   const nav = useNavigate();
@@ -129,6 +130,8 @@ function Requests() {
     <>
       {/* 🎨 Canvas de fondo con ondas dinámicas */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
+
+      <Navbar/>
 
       <main>
       {forms.length === 0 ? (

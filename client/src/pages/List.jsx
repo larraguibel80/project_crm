@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useRef, useEffect, useState } from "react";
+import AdminBar from "../components/AdminBar";
+import { Navbar } from "react-bootstrap";
 
 function List() {
   const nav = useNavigate();
@@ -111,6 +113,7 @@ function List() {
   return (
     <>
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
+      <AdminBar/>
   
       <main>
         <h1 className="list-heading">List</h1> 

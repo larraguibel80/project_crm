@@ -1,7 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
-import Navbar from "./components/Navbar";
 import Form from "./pages/Form";
 import Login from "./pages/Login";
 import Confirmation from "./pages/Confirmation";
@@ -12,11 +11,11 @@ import Requests from "./pages/Requests";
 import List from "./pages/List";
 import ChangePassword from "./pages/ChangePassword";
 import './App.css';
+import AdminPage from "./pages/AdminPage";
 
 function App() {
   return (
     <BrowserRouter>
-    <Navbar />
       <Routes>
         <Route path="/" element={<Form />} />
         <Route path="/login" element={<Login />} />
@@ -27,6 +26,7 @@ function App() {
         <Route path="/list" element={<List />}/>
         <Route path="/confirmation" element={<Confirmation />} />
         <Route path="/changepassword" element={<ChangePassword />} />
+        <Route path="/adminpage" element={<AdminPage />} />
       </Routes>
     </BrowserRouter>
   );

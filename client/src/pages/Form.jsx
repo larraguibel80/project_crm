@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import LoginBar from "../components/LoginBar";
 
 function Form() {
   const nav = useNavigate();
@@ -106,6 +107,7 @@ function Form() {
     <>
       {/* 🎨 Canvas en el fondo */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
+      <LoginBar/>
 
       <main>
         <div className="formArea">

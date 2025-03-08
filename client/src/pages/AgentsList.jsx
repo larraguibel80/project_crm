@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useRef, useEffect, useState } from "react";
+import AdminBar from "../components/AdminBar";
 
 function AgentsList() {
   const nav = useNavigate();
@@ -153,6 +154,8 @@ function AgentsList() {
     <>
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
 
+      <AdminBar/>
+
       <main>
         <div className="LoginArea">
           <input
@@ -199,7 +202,7 @@ function AgentsList() {
             </tr>
           </thead>
           <tbody>
-            {agents.map((agent) => (
+            {agents.map((agent) => ( 
               <tr key={agent.id}>
                 <td>{agent.id}</td>
                 <td>{agent.firstName}</td>
