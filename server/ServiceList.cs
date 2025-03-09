@@ -12,7 +12,7 @@ public class ServiceList
     public string? agent_email { get; set; }
 
 
-    public ServiceList(int id, int form_id, int? agent_id, string? form_email, string service_product,
+    public ServiceList(int id, int form_id, int? agent_id, string form_email, string service_product,
         string message, DateTime created, string? agent_email)
     {
         this.id = id;
