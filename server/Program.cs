@@ -1,3 +1,4 @@
+using System.Data;
 using Npgsql;
 using server;
 
@@ -33,7 +34,7 @@ Hello {form.email},
 Thank you for your submission! 
 
 To join the chat, click the link below:
-<a href='http://localhost:4000/chat/{token}'>Join Chat</a>
+<a href='http://localhost:4001/chat/{token}'>Join Chat</a>
 
 Best regards,
 CRM Team";
@@ -78,14 +79,31 @@ async Task AddForm(string email, string service_product, string message, Guid to
         return;
     }
     await using var cmd =
-        db.CreateCommand("INSERT INTO forms (email, service_product, message, token) VALUES (@email, @service_product, @message, @token)");
+        db.CreateCommand("INSERT INTO forms (email, service_product, message, token) VALUES (@email, @service_product, @message, @token) RETURNING id");
         
     cmd.Parameters.AddWithValue("@email", email);
     cmd.Parameters.AddWithValue("@service_product", service_product);
     cmd.Parameters.AddWithValue("@message", message);
     cmd.Parameters.AddWithValue("@token", token);
 
-    await cmd.ExecuteNonQueryAsync();
+    int formId;
+    await using (var reader = await cmd.ExecuteReaderAsync())
+    {
+        if (await reader.ReadAsync())
+        {
+            formId = reader.GetInt32(0);
+        }
+        else
+        {
+            Console.WriteLine("Fail");
+            return;
+        }
+    }
+
+    await using var cmd2 = db.CreateCommand("INSERT INTO service_list (form_id, agent_id) VALUES (@form_id, NULL)");
+    cmd2.Parameters.AddWithValue("@form_id", formId);
+    await cmd2.ExecuteNonQueryAsync();
+
 }
 
 app.MapGet("/api/agents", async () => await AgentsList.GetAllAgents(db));
@@ -103,7 +121,7 @@ Welcome to this CRM system!
 Your current password is: {agent.Password}
 
 If you want to change your password, click the link below:
-<a href='http://localhost:4000/changepassword'>Change Password</a>
+<a href='http://localhost:4001/changepassword'>Change Password</a>
 
 Best regards,
 CRM Team";
@@ -147,37 +165,38 @@ async Task DeleteAgent(int id)
     await cmd.ExecuteNonQueryAsync();
 }
 
-app.MapGet("/api/list", () => GetList());
+app.MapGet("/api/service_list", () => GetList());
 
-async Task<List<List>> GetList()
+async Task<List<ServiceList>> GetList()
 {
-    var agents = new List<List>();
-    await using var cmd = db.CreateCommand("SELECT * FROM list");
+    var service = new List<ServiceList>();
+    await using var cmd = db.CreateCommand("SELECT service_list.id, service_list.form_id, service_list.agent_id, forms.email AS form_email, forms.service_product, forms.message, forms.created, agents.email AS agent_email FROM service_list INNER JOIN forms ON service_list.form_id = forms.id LEFT JOIN agents ON service_list.agent_id = agents.id  ");
     await using (var reader = await cmd.ExecuteReaderAsync())
     {
         while (await reader.ReadAsync())
         {
-            agents.Add(new List(
-                reader.GetInt32(0),  // Id
-                reader.GetInt32(1),  // Clients_id
-                reader.GetInt32(2),  // Users_id
-                reader.GetString(3),  // Subject
-                reader.GetString(4),  // Message
-                reader.GetString(5),  // Status
-                reader.GetString(6)   // Priority
+            service.Add(new ServiceList(
+                reader.GetInt32(0),
+                reader.GetInt32(1),
+                reader.IsDBNull(2) ? (int?)null : reader.GetInt32(2),
+                reader.GetString(3),
+                reader.GetString(4),
+                reader.GetString(5),
+                reader.GetDateTime(6),
+                reader.IsDBNull(7) ? string.Empty : reader.GetString(7)
             ));
         
-        } return agents;
+        } return service;
     }
 }
 
 async Task DeleteList(int id)
 {
-    await using var cmd = db.CreateCommand("DELETE FROM list WHERE id = @id");
+    await using var cmd = db.CreateCommand("DELETE FROM service_list WHERE id = @id");
     cmd.Parameters.AddWithValue("@id", id);
     await cmd.ExecuteNonQueryAsync();
 }
-app.MapDelete("/api/list/{id}", async (int id) =>
+app.MapDelete("/api/service_list/{id}", async (int id) =>
 {
     await DeleteList(id);
     return Results.Ok(new { message = "Tjänst has been deleted" });

@@ -1,12 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useRef, useEffect, useState } from "react";
 import AdminBar from "../components/AdminBar";
-import { Navbar } from "react-bootstrap";
 
 function List() {
   const nav = useNavigate();
   const canvasRef = useRef(null); // Referencia al canvas
-  const [list, setList] = useState([]); // State to store the agents data
+  const [serviceList, setServiceList] = useState([]); // State to store the agents data
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -77,12 +76,12 @@ function List() {
 
   // Fetch agents data from the backend
   useEffect(() => {
-    const fetchList = async () => {
+    const fetchServiceList = async () => {
       try {
-        const response = await fetch("/api/list");
+        const response = await fetch("/api/service_list");
         if (response.ok) {
           const data = await response.json();
-          setList(data); // Update state with fetched data
+          setServiceList(data); // Update state with fetched data
         } else {
           console.error("Failed to fetch list data");
         }
@@ -91,16 +90,16 @@ function List() {
       }
     };
 
-    fetchList();
+    fetchServiceList();
   }, []);
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`/api/list/${id}`, {
+      const response = await fetch(`/api/service_list/${id}`, {
         method: "DELETE",
       });
       if (response.ok) {
-        setList(list.filter((list) => list.id !== id)); // Remove the agent from the state
+        setServiceList(serviceList.filter((item) => item.id !== id)); // Remove the agent from the state
       } else {
         console.error("Failed to delete list");
       }
@@ -116,32 +115,30 @@ function List() {
       <AdminBar/>
   
       <main>
-        <h1 className="list-heading">List</h1> 
+        <h1 className="list-heading">Service List</h1> 
         <table>
           <thead>
             <tr>
               <th>Id</th>
-              <th>Clients_id</th>
-              <th>Users_id</th>
-              <th>Subject</th>
+              <th>Customer Email</th>
+              <th>Service/Product</th>
               <th>Message</th>
-              <th>Status</th>
-              <th>Priority</th>
+              <th>Created</th>
+              <th>Agent Email</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {list.map((list) => (
-              <tr key={list.id}>
-                <td>{list.id}</td>
-                <td>{list.clients_id}</td>
-                <td>{list.users_id}</td>
-                <td>{list.subject}</td>
-                <td>{list.message}</td>
-                <td>{list.status}</td>
-                <td>{list.priority}</td>
+            {serviceList.map((item) => (
+              <tr key={item.id}>
+                <td>{item.id}</td>
+                <td>{item.form_email}</td>
+                <td>{item.service_product}</td>
+                <td>{item.message}</td>
+                <td>{item.created}</td>
+                <td>{item.agent_email || "Not handled"} </td>
                 <td>
-                  <button onClick={() => handleDelete(list.id)}>Delete</button>
+                  <button onClick={() => handleDelete(item.id)}>Delete</button>
                 </td>
               </tr>
             ))}
