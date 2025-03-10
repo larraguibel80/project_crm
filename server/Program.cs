@@ -11,6 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddSingleton<EmailService>();
+builder.Services.AddSingleton<Database>();  // Register Database as a Singleton
 builder.Services.AddHttpContextAccessor(); // Add IHttpContextAccessor
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>

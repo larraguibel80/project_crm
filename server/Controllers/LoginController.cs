@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using server;  // Assuming Database and Employee are in the 'server' namespace
 
 namespace YourNamespace.Controllers
 {
@@ -6,6 +7,14 @@ namespace YourNamespace.Controllers
     [Route("login")]
     public class LoginController : ControllerBase
     {
+        private readonly Database _database;  // Inject the Database class here
+
+        // Constructor to inject the Database class
+        public LoginController(Database database)
+        {
+            _database = database;  // Assign the injected Database instance
+        }
+
         [HttpPost]
         public IActionResult Login([FromBody] LoginRequest loginRequest)
         {
@@ -14,25 +23,17 @@ namespace YourNamespace.Controllers
                 return BadRequest("Email and password are required.");
             }
 
-            // Dummy user validation (replace with actual logic)
-            var user = ValidateUser(loginRequest.Email, loginRequest.Password);
+            // Use the Database class to authenticate the user
+            var user = _database.AuthenticateUser(loginRequest.Email, loginRequest.Password);
 
+            // If user is null, return Unauthorized
             if (user == null)
             {
                 return Unauthorized(new { message = "Invalid credentials" });
             }
 
-            return Ok(new { role = user.Role });  // Send the role back on successful login
-        }
-
-        private User ValidateUser(string email, string password)
-        {
-            // Example validation - replace with real database/authentication logic
-            if (email == "test@example.com" && password == "password123")
-            {
-                return new User { Role = "admin" };
-            }
-            return null;
+            // Return the user's role if authentication is successful
+            return Ok(new { role = user.Role });
         }
     }
 
@@ -41,11 +42,5 @@ namespace YourNamespace.Controllers
     {
         public string Email { get; set; }
         public string Password { get; set; }
-    }
-
-    // A basic User class (you can expand this with more details)
-    public class User
-    {
-        public string Role { get; set; }
     }
 }
