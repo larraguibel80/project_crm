@@ -1,10 +1,15 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginBar from "../components/LoginBar";
 
 function Login() {
-  const nav = useNavigate();
   const canvasRef = useRef(null);
+  const navigate = useNavigate();
+  const [role, setRole] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(""); // Added error state
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -24,7 +29,7 @@ function Login() {
         vx: Math.random() * 2 - 1,
         vy: Math.random() * 2 - 1,
         radius: Math.random() * 3 + 1,
-        color: "rgba(255, 255, 255, 0.8)"
+        color: "rgba(255, 255, 255, 0.8)",
       });
     }
 
@@ -78,11 +83,40 @@ function Login() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const handleLogin = async () => {
+    setError("");
+    const loginData = { email, password, role };
+
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.message || "Login failed");
+      }
+      console.log("Login successful", result);
+
+      if (role === "Admin") {
+        navigate("/adminPage"); 
+      } else {
+        navigate("/dashboard"); 
+      }
+
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   return (
     <>
       {/* 🎨 Canvas de fondo */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
-
       <LoginBar/>
 
       <main>
@@ -94,9 +128,37 @@ function Login() {
               alt="Login Logo"
             />
           </div>
-          <input type="text" placeholder="Email" />
-          <input type="password" placeholder="Password" />
-          <button className="sendBtn" onClick={() => nav("/dashboard")}>Log in</button>
+
+          {/* Email and Password Inputs */}
+          <input
+            type="text"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+
+          {/* Role Selection (Dropdown) */}
+          <div className="postholderSelection" onClick={() => setShowDropdown(!showDropdown)}>
+            <input type="text" placeholder="Role" value={role} readOnly />
+            {showDropdown && (
+              <div className="dropdown">
+                <div onClick={() => setRole("Admin")}>Admin</div>
+                <div onClick={() => setRole("Agent")}>Agent</div>
+              </div>
+            )}
+          </div>
+
+          {error && <p style={{ color: "red" }}>{error}</p>}
+
+          <button className="sendBtn" onClick={handleLogin}>
+            Log in
+          </button>
         </div>
       </main>
 
@@ -115,6 +177,34 @@ function Login() {
           background: #00c3ff; 
           background: -webkit-linear-gradient(to bottom, #ffff1c, #00c3ff); 
           background: linear-gradient(to bottom, #ffff1c, #00c3ff); 
+        }
+        .postholderSelection {
+          position: relative;
+        }
+        .postholderSelection input {
+          margin-top: 0px;
+          padding: 0.8rem;
+          border: 1px solid #ced4da;
+          border-radius: 4px;
+          width: 100%;
+          font-size: 1rem;
+        }
+
+        .dropdown {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          right: 0;
+          background-color: white;
+          border: 1px solid #ccc;
+          z-index: 1;
+        }
+        .dropdown div {
+          padding: 10px;
+          cursor: pointer;
+        }
+        .dropdown div:hover {
+          background-color: lightgray;
         }
       `}</style>
     </>

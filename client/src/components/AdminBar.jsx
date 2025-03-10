@@ -26,7 +26,7 @@ const AdminBar = () => {
               <Link className="nav-link" to="/agentslist">Agents</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/requests">Requests</Link>
+              <Link className="nav-link" to="/requestadmin">Requests</Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/list">List</Link>

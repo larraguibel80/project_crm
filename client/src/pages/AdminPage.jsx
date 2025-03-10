@@ -74,7 +74,7 @@ function AdminPage() {
 
       <main>
         <h1 className="dashboard_text">Welcome to our CRM-System  <img className="logoPictureDash" src="https://img.freepik.com/free-vector/chatbot-chat-message-vectorart_78370-4104.jpg?t=st=1739194345~exp=1739197945~hmac=c1020f36982eb3b68289d6519c9cfe6eef14dd88a25eadaf2b45cf453eea3d25&w=740" /></h1>
-        <h2>We are here to support your operations. Admin Page</h2>
+        <h2>We are here to support your operations.</h2>
       </main>
 
       <footer>
@@ -91,7 +91,7 @@ function AdminPage() {
           z-index: -1;
           background: #1F1C2C;
           background: -webkit-linear-gradient(to bottom, #928DAB, #1F1C2C);
-          background: linear-gradient(to bottom, #928DAB, #1F1C2C);
+          background: linear-gradient(to bottom,rgb(188, 226, 253),rgb(52, 179, 248));
         }
       `}</style>
     </>
@@ -99,3 +99,4 @@ function AdminPage() {
 }
 
 export default AdminPage;
+

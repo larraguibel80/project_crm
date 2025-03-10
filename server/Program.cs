@@ -262,5 +262,54 @@ async Task UpdatePassword(string email, string newPassword)
     cmd.Parameters.AddWithValue("@password", newPassword);
     await cmd.ExecuteReaderAsync();
 }
+// Updated: Login endpoint
+app.MapPost("/api/login", async (LoginRequest loginRequest) =>
+{
+    try
+    {
+        bool isAuthenticated = await AuthenticateUser(loginRequest.Email, loginRequest.Password, loginRequest.Role);
+        if (isAuthenticated)
+        {
+            return Results.Ok(new { message = "Login successful" });
+        }
+        else
+        {
+            return Results.BadRequest(new { message = "Invalid email, password, or role" });
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error: {ex.Message}");
+        return Results.Json(new { message = ex.Message }, statusCode: 500);
+    }
+});
 
+async Task<bool> AuthenticateUser(string email, string password, string role)
+{
+    string query = string.Empty;
+    
+    // Determine query based on role (case-insensitive)
+    if (role.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+    {
+        query = "SELECT * FROM admins WHERE email = @email AND password = @password";
+    }
+    else if (role.Equals("Agent", StringComparison.OrdinalIgnoreCase))
+    {
+        query = "SELECT * FROM agents WHERE email = @email AND password = @password";
+    }
+    else
+    {
+        return false;  // Invalid role
+    }
+
+    // Execute the query
+    await using var cmd = db.CreateCommand(query);
+    cmd.Parameters.AddWithValue("@email", email);
+    cmd.Parameters.AddWithValue("@password", password);
+
+    await using (var reader = await cmd.ExecuteReaderAsync())
+    {
+        return await reader.ReadAsync();  // If a row is returned, credentials are correct
+    }
+}
 app.Run();

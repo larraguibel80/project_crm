@@ -12,6 +12,7 @@ import List from "./pages/List";
 import ChangePassword from "./pages/ChangePassword";
 import './App.css';
 import AdminPage from "./pages/AdminPage";
+import RequestsAdmin from "./pages/RequestsAdmin";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/confirmation" element={<Confirmation />} />
         <Route path="/changepassword" element={<ChangePassword />} />
         <Route path="/adminpage" element={<AdminPage />} />
+        <Route path="/requestadmin" element={<RequestsAdmin />} />
       </Routes>
     </BrowserRouter>
   );
