@@ -34,7 +34,7 @@ Hello {form.email},
 Thank you for your submission! 
 
 To join the chat, click the link below:
-<a href='http://localhost:4000/chat/{token}'>Join Chat</a>
+<a href='http://localhost:4003/chat/{token}'>Join Chat</a>
 
 Best regards,
 CRM Team";
@@ -121,7 +121,7 @@ Welcome to this CRM system!
 Your current password is: {agent.Password}
 
 If you want to change your password, click the link below:
-<a href='http://localhost:4000/changepassword'>Change Password</a>
+<a href='http://localhost:4003/changepassword'>Change Password</a>
 
 Best regards,
 CRM Team";
@@ -164,7 +164,31 @@ async Task DeleteAgent(int id)
     cmd.Parameters.AddWithValue("@id", id);
     await cmd.ExecuteNonQueryAsync();
 }
+app.MapPut("/api/agents/{id}", async (int id, AgentsList updatedAgent) =>
+{
+    await UpdateAgent(id, updatedAgent.Firstname, updatedAgent.Lastname, updatedAgent.Email, updatedAgent.Password);
+    return Results.Ok(new { message = "Agent has been updated" });
+});
 
+async Task UpdateAgent(int id, string firstname, string lastname, string email, string password)
+{
+    if (string.IsNullOrWhiteSpace(firstname) || string.IsNullOrWhiteSpace(lastname) || 
+        string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+    {
+        Console.WriteLine("All fields are required");
+        return;
+    }
+    await using var cmd =
+        db.CreateCommand("UPDATE agents SET firstname = @firstname, lastname = @lastname, email = @email, password = @password WHERE id = @id");
+
+    cmd.Parameters.AddWithValue("@id", id);
+    cmd.Parameters.AddWithValue("@firstname", firstname);
+    cmd.Parameters.AddWithValue("@lastname", lastname);
+    cmd.Parameters.AddWithValue("@email", email);
+    cmd.Parameters.AddWithValue("@password", password);
+
+    await cmd.ExecuteNonQueryAsync();
+}
 app.MapGet("/api/service_list", () => GetList());
 
 async Task<List<ServiceList>> GetList()

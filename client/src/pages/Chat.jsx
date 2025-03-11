@@ -157,7 +157,7 @@ function Chat() {
 
             <div className="chatRuta">
               {messages.map((msg,index) => (
-                <h6 key={index}><strong>{msg.username}</strong>: {msg.message}</h6>
+                <h6 key={index}><strong>{msg.username}:</strong>{msg.message}</h6>
               ))}
             </div>
 

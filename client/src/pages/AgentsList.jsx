@@ -12,7 +12,11 @@ function AgentsList() {
     email: "",
     password: "",
   });
+  const [editAgent, setEditAgent] = useState(null);
+  const [error, setError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false); // Toggle password visibility
 
+  // Canvas animation
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -35,6 +39,8 @@ function AgentsList() {
         rotationSpeed: Math.random() * 2 - 1,
       });
     }
+
+    let animationFrameId;
 
     function drawTriangles() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -63,7 +69,7 @@ function AgentsList() {
         }
       });
 
-      requestAnimationFrame(drawTriangles);
+      animationFrameId = requestAnimationFrame(drawTriangles);
     }
 
     drawTriangles();
@@ -74,39 +80,64 @@ function AgentsList() {
     };
     window.addEventListener("resize", handleResize);
 
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      cancelAnimationFrame(animationFrameId);
+    };
   }, []);
 
+  // Fetch agents
   useEffect(() => {
     const fetchAgents = async () => {
       try {
         const response = await fetch("/api/agents");
         if (response.ok) {
           const data = await response.json();
-          setAgents(data.map(agent => ({
-            id: agent.id,
-            firstName: agent.firstname,
-            lastName: agent.lastname,
-            email: agent.email,
-            password: agent.password
-          })));
+          setAgents(data.map(mapAgentData));
         } else {
-          console.error("Failed to fetch agents data");
+          setError("Failed to fetch agents data");
         }
       } catch (error) {
-        console.error("Error fetching agents data:", error);
+        setError("Error fetching agents data");
+        console.error(error);
       }
     };
 
     fetchAgents();
   }, []);
 
+  // Map agent data
+  const mapAgentData = (agent) => ({
+    id: agent.id,
+    firstName: agent.firstname,
+    lastName: agent.lastname,
+    email: agent.email,
+    password: agent.password, // Store actual password for admin
+  });
+
+  // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewAgent((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleEditInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditAgent((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Add agent
   const handleAddAgent = async () => {
+    if (!newAgent.firstName || !newAgent.lastName || !newAgent.email || !newAgent.password) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
+    if (!/\S+@\S+\.\S+/.test(newAgent.email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
     try {
       const response = await fetch("/api/agents", {
         method: "POST",
@@ -117,45 +148,70 @@ function AgentsList() {
       });
       if (response.ok) {
         const addedAgent = await response.json();
-        setAgents((prevAgents) => [
-          ...prevAgents,
-          {
-            id: addedAgent.id,
-            firstName: addedAgent.firstname,
-            lastName: addedAgent.lastname,
-            email: addedAgent.email,
-            password: addedAgent.password
-          }
-        ]);
+        setAgents((prevAgents) => [...prevAgents, mapAgentData(addedAgent)]);
+        setNewAgent({ firstName: "", lastName: "", email: "", password: "" });
+        setError(null);
       } else {
-        console.error("Failed to add agent");
+        setError("Failed to add agent.");
       }
     } catch (error) {
-      console.error("Error adding agent:", error);
+      setError("An error occurred while adding the agent.");
+      console.error(error);
     }
   };
 
+  // Edit agent
+  const handleEditAgent = (agent) => {
+    setEditAgent(agent);
+    setShowPassword(false); // Reset password visibility when editing
+  };
+
+  // Save edited agent
+  const handleSaveAgent = async () => {
+    try {
+      const response = await fetch(`/api/agents/${editAgent.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editAgent),
+      });
+      if (response.ok) {
+        const updatedAgent = await response.json();
+        setAgents(agents.map((agent) => (agent.id === updatedAgent.id ? mapAgentData(updatedAgent) : agent)));
+        setEditAgent(null);
+        setError(null);
+      } else {
+        setError("Failed to update agent.");
+      }
+    } catch (error) {
+      setError("An error occurred while updating the agent.");
+      console.error(error);
+    }
+  };
+
+  // Delete agent
   const handleDelete = async (id) => {
     try {
       const response = await fetch(`/api/agents/${id}`, {
         method: "DELETE",
       });
       if (response.ok) {
-        setAgents(agents.filter((agent) => agent.id !== id)); // Remove the agent from the state
+        setAgents(agents.filter((agent) => agent.id !== id));
+        setError(null);
       } else {
-        console.error("Failed to delete agent");
+        setError("Failed to delete agent.");
       }
     } catch (error) {
-      console.error("Error deleting agent:", error);
+      setError("An error occurred while deleting the agent.");
+      console.error(error);
     }
   };
 
   return (
     <>
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
-
       <AdminBar/>
-
       <main>
         <div className="LoginArea">
           <input
@@ -179,39 +235,89 @@ function AgentsList() {
             value={newAgent.email}
             onChange={handleInputChange}
           />
-          <input
-            type="password"
-            name="password"
-            placeholder="Enter agent password"
-            value={newAgent.password}
-            onChange={handleInputChange}
-          />
+          <div className="password-input">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Enter agent password"
+              value={newAgent.password}
+              onChange={handleInputChange}
+            />
+            <span
+              className="eye-icon"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? "👁️" : "👁️‍🗨️"}
+            </span>
+          </div>
           <button className="add-button" onClick={handleAddAgent}>Add</button>
+          {error && <p className="error-message">{error}</p>}
         </div>
 
-        <h1 className="list-heading">Agents</h1>
+        {editAgent && (
+          <div className="EditArea">
+            <h2>Edit Agent</h2>
+            <input
+              type="text"
+              name="firstName"
+              value={editAgent.firstName}
+              onChange={handleEditInputChange}
+            />
+            <input
+              type="text"
+              name="lastName"
+              value={editAgent.lastName}
+              onChange={handleEditInputChange}
+            />
+            <input
+              type="email"
+              name="email"
+              value={editAgent.email}
+              onChange={handleEditInputChange}
+            />
+            <div className="password-input">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Enter agent password"
+                value={editAgent.password}
+                onChange={handleEditInputChange}
+              />
+              <span
+                className="eye-icon"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "👁️" : "👁️‍🗨️"}
+              </span>
+            </div>
+            <button className="save-button" onClick={handleSaveAgent}>Save</button>
+            <button className="cancel-button" onClick={() => setEditAgent(null)}>Cancel</button>
+          </div>
+        )}
+
+        <h2 className="list-heading">Agents</h2>
         <table>
           <thead>
             <tr>
-              <th>Id</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Email</th>
-              <th>Password</th>
-              <th>Actions</th>
+              <th style={{ width: '5%' }}>Id</th>
+              <th style={{ width: '25%' }}>First Name</th>
+              <th style={{ width: '25%' }}>Last Name</th>
+              <th style={{ width: '15%' }}>Email</th>
+              <th style={{ width: '15%' }}>Password</th>
+              <th style={{ width: '15%' }}>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {agents.map((agent) => ( 
-              <tr key={agent.id}>
+            {agents.map((agent,index) => (
+              <tr key={index}>
                 <td>{agent.id}</td>
                 <td>{agent.firstName}</td>
                 <td>{agent.lastName}</td>
                 <td>{agent.email}</td>
                 <td>{agent.password}</td>
-                <td>
-                    <button className="edit-button">Edit</button>
-                    <button className="delete-button" onClick={() => handleDelete(agent.id)}>Delete</button>
+                <td className="buttons-column">
+                  <button className="edit-button" onClick={() => handleEditAgent(agent)}>Edit</button>
+                  <button className="delete-button" onClick={() => handleDelete(agent.id)}>Delete</button>
                 </td>
               </tr>
             ))}
@@ -263,6 +369,21 @@ function AgentsList() {
           border: 1px solid #ddd;
           border-radius: 4px;
           font-size: 14px;
+          width: 100%;
+        }
+        .password-input {
+          position: relative;
+          width: 100%;
+        }
+        .password-input input {
+          padding-right: 40px; /* Space for the eye icon */
+        }
+        .eye-icon {
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          cursor: pointer;
         }
         .add-button {
           background-color: green;
@@ -271,38 +392,85 @@ function AgentsList() {
           padding: 5px 10px;
           border-radius: 4px;
         }
+        .save-button, .cancel-button {
+          background-color: #4CAF50;
+          color: white;
+          padding: 10px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+        .cancel-button {
+          background-color: #FF0509;;
+        }
         table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: #a8e063;
-            background: -webkit-linear-gradient(to bottom, #a8e063, #66cc66);
-            background: linear-gradient(to bottom, #a8e063, #66cc66);
-            border-radius: 8px;
+          width: 50%;
+          border-collapse: collapse;
+          margin-top: 20px;
+          background: #a8e063;
+          background: -webkit-linear-gradient(to bottom, rgba(168, 224, 99, 0.5), rgba(102, 204, 102, 0.5));
+          background: linear-gradient(to bottom, rgba(168, 224, 99, 0.5), rgba(102, 204, 102, 0.5));
+          border-radius: 8px;
+          margin-top: 2%;
+          margin-left: 25%;
+          margin-right: 25%;
+          padding: 2%;
+          box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
         }
         thead {
           background: #a8e063;
+          background: -webkit-linear-gradient(to bottom, rgba(168, 224, 99, 0.5), rgba(102, 204, 102, 0.5));
+          background: linear-gradient(to bottom, rgba(168, 224, 99, 0.5), rgba(102, 204, 102, 0.5));
+          border-radius: 8px;
+        }
+        td, th {
+          padding: 10px;
+          border: 1px solid #000;
+          text-align: left;
+          color: #000;
+        }
+        .buttons-column {
+          display: flex;
+          justify-content: space-between;
+          padding: 5px;
+        }
+        .edit-button {
+          background-color: #D9D9D9;
+          border-radius: 8px;
+          padding: 5px 10px;
+          margin-left: 5px;
+        }
+        .delete-button {
+          background-color: #FF0509;
+          border-radius: 8px;
+          padding: 5px 10px;
+          margin-right: 5px;
+        }
+        .EditArea {
+          display: flex;
+          background:  #66cc66;
           background: -webkit-linear-gradient(to bottom, #a8e063, #66cc66);
           background: linear-gradient(to bottom, #a8e063, #66cc66);
           border-radius: 8px;
+          flex-direction: column;
+          margin-top: 2%;
+          margin-left: 25%;
+          margin-right: 25%;
+          padding: 2%;
+          box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+          gap: 20px;
         }
-        th {
+        .EditArea input {
           padding: 10px;
           border: 1px solid #ddd;
-          text-align: left;
-          color: white;
+          border-radius: 4px;
+          font-size: 14px;
+          width: 100%;
         }
-        td {
-          padding: 10px;
-          border: 1px solid #ddd;
-          text-align: left;
-          color: black;
-        }
-        .edit-button {
-          background-color: gray;
-        }
-        .delete-button {
-          background-color: red;
+        .error-message {
+          color: red;
+          font-size: 14px;
+          margin-top: 10px;
         }
       `}</style>
     </>

@@ -115,7 +115,7 @@ function List() {
       <AdminBar/>
   
       <main>
-        <h1 className="list-heading">Service List</h1> 
+        <h2>Service List</h2> 
         <table>
           <thead>
             <tr>
