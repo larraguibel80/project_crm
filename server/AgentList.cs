@@ -25,7 +25,7 @@ namespace server
         public static async Task<List<AgentsList>> GetAllAgents(NpgsqlDataSource db)
         {
             var agents = new List<AgentsList>();
-            await using var cmd = db.CreateCommand("SELECT * FROM agents");
+            await using var cmd = db.CreateCommand("SELECT * FROM agents WHERE is_deleted = false");
             await using (var reader = await cmd.ExecuteReaderAsync())
             {
                 while (await reader.ReadAsync())

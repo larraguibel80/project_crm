@@ -160,7 +160,7 @@ app.MapDelete("/api/agents/{id}", async (int id) =>
 
 async Task DeleteAgent(int id)
 {
-    await using var cmd = db.CreateCommand("DELETE FROM agents WHERE id = @id");
+    await using var cmd = db.CreateCommand("UPDATE agents SET is_deleted = true, deleted_at = NOW() WHERE id = @id");
     cmd.Parameters.AddWithValue("@id", id);
     await cmd.ExecuteNonQueryAsync();
 }
