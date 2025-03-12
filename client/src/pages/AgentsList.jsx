@@ -214,6 +214,7 @@ function AgentsList() {
       <AdminBar/>
       <main>
         <div className="LoginArea">
+          <h2>Add Agent</h2>
           <input
             type="text"
             name="firstName"
@@ -295,7 +296,6 @@ function AgentsList() {
           </div>
         )}
 
-        <h2 className="list-heading">Agents</h2>
         <table>
           <thead>
             <tr>
@@ -344,7 +344,6 @@ function AgentsList() {
         main {
           padding: 20px;
           position: relative;
-          z-index: 1;
         }
         .list-heading {
           text-align: left;
@@ -358,8 +357,8 @@ function AgentsList() {
           border-radius: 8px;
           flex-direction: column;
           margin-top: 2%;
-          margin-left: 25%;
-          margin-right: 25%;
+          margin-left: 17%;
+          margin-right: 17%;
           padding: 2%;
           box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
           gap: 20px;
@@ -404,7 +403,7 @@ function AgentsList() {
           background-color: #FF0509;;
         }
         table {
-          width: 50%;
+          width: 66%;
           border-collapse: collapse;
           margin-top: 20px;
           background: #a8e063;
@@ -412,10 +411,11 @@ function AgentsList() {
           background: linear-gradient(to bottom, rgba(168, 224, 99, 0.5), rgba(102, 204, 102, 0.5));
           border-radius: 8px;
           margin-top: 2%;
-          margin-left: 25%;
+          margin-left: 17%;
           margin-right: 25%;
           padding: 2%;
           box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+          margin-bottom: 5%;
         }
         thead {
           background: #a8e063;

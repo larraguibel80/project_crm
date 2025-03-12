@@ -43,7 +43,7 @@ CRM Team";
     emailService.SendEmail(form.email, subject, body);
 
     return Results.Ok(new { message = "Form has been saved and email sent", token });
-});
+}); 
 
 // Function to retrieve forms from the database
 async Task<List<Form>> GetForms()

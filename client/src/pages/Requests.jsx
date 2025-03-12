@@ -185,6 +185,9 @@ function Requests() {
           background: -webkit-linear-gradient(to bottom, #fdeff9, #ec38bc, #7303c0, #03001e);
           background: linear-gradient(to bottom, #fdeff9, #ec38bc, #7303c0, #03001e); 
         }
+       table{
+          margin-bottom: 2.5%
+       }
       `}</style>
     </>
   );

@@ -165,7 +165,7 @@ function List() {
         main {
           padding: 20px;
           position: relative;
-          z-index: 1;
+         
         }
         .list-heading { /* Added this CSS for the h1 */
           text-align: left; /* Align text to the left */
@@ -177,6 +177,7 @@ function List() {
           border-collapse: collapse;
           margin-top: 20px;
           background-color: rgba(255, 255, 255, 0.8);
+          margin-bottom: 3%
         }
         th, td {
           padding: 10px;
