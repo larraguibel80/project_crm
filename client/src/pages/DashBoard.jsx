@@ -4,9 +4,8 @@ import Navbar from "../components/Navbar";
 
 function DashBoard() {
   const nav = useNavigate();
-  const canvasRef = useRef(null); // Referencia al canvas
+  const canvasRef = useRef(null); 
 
-  // 🎨 Efecto de fondo con círculos flotantes
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -17,7 +16,6 @@ function DashBoard() {
     const circles = [];
     const numCircles = 50;
 
-    // Crear círculos flotantes
     for (let i = 0; i < numCircles; i++) {
       circles.push({
         x: Math.random() * canvas.width,
@@ -38,11 +36,9 @@ function DashBoard() {
         ctx.fillStyle = circle.color;
         ctx.fill();
 
-        // Mover círculos
         circle.x += circle.speedX;
         circle.y += circle.speedY;
 
-        // Cambiar dirección si llega a los bordes
         if (circle.x + circle.radius > canvas.width || circle.x - circle.radius < 0) {
           circle.speedX *= -1;
         }
@@ -67,7 +63,6 @@ function DashBoard() {
 
   return (
     <>
-      {/* Canvas de fondo con círculos flotantes */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
 
       <Navbar/>

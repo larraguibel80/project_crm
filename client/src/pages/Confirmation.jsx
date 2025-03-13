@@ -4,9 +4,8 @@ import LoginBar from "../components/LoginBar";
 
 function Confirmation() {
   const nav = useNavigate();
-  const canvasRef = useRef(null); // Referencia al canvas
-
-  // 🎨 Efecto de fondo pulsante
+  const canvasRef = useRef(null); 
+  
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -17,7 +16,6 @@ function Confirmation() {
     const lights = [];
     const numLights = 50;
 
-    // Crear luces
     for (let i = 0; i < numLights; i++) {
       lights.push({
         x: Math.random() * canvas.width,
@@ -62,7 +60,6 @@ function Confirmation() {
 
   return (
     <>
-      {/* 🎨 Canvas de fondo pulsante */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
       <LoginBar/>
 

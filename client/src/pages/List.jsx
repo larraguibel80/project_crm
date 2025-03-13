@@ -4,8 +4,8 @@ import AdminBar from "../components/AdminBar";
 
 function List() {
   const nav = useNavigate();
-  const canvasRef = useRef(null); // Referencia al canvas
-  const [serviceList, setServiceList] = useState([]); // State to store the agents data
+  const canvasRef = useRef(null); 
+  const [serviceList, setServiceList] = useState([]); 
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -25,8 +25,8 @@ function List() {
         maxSize: Math.random() * 40 + 20,
         growSpeed: Math.random() * 0.1 + 0.05,
         alpha: Math.random() * 0.5 + 0.3,
-        rotation: Math.random() * 360, // Rotaci贸n inicial
-        rotationSpeed: Math.random() * 2 - 1, // Velocidad de rotaci贸n
+        rotation: Math.random() * 360, 
+        rotationSpeed: Math.random() * 2 - 1, 
       });
     }
 
@@ -34,13 +34,12 @@ function List() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       triangles.forEach((tri) => {
-        ctx.save(); // Guardar el contexto
+        ctx.save(); 
 
         ctx.translate(tri.x, tri.y);
         ctx.rotate((tri.rotation * Math.PI) / 180);
         ctx.translate(-tri.x, -tri.y);
 
-        // Dibujar tringulo
         ctx.beginPath();
         ctx.moveTo(tri.x, tri.y - tri.size / 2);
         ctx.lineTo(tri.x - tri.size / 2, tri.y + tri.size / 2);
@@ -49,14 +48,13 @@ function List() {
         ctx.fillStyle = `rgba(255, 255, 255, ${tri.alpha})`;
         ctx.fill();
 
-        ctx.restore(); // Restaurar el contexto
+        ctx.restore(); 
 
-        // Animaciones
         tri.size += tri.growSpeed;
         tri.rotation += tri.rotationSpeed;
 
         if (tri.size > tri.maxSize || tri.size < 10) {
-          tri.growSpeed *= -1; // Invertir la direcci贸n de crecimiento
+          tri.growSpeed *= -1;
         }
       });
 

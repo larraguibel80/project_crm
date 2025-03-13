@@ -15,8 +15,13 @@ NpgsqlDataSource db = database.Connection();
 
 
 app.MapGet("/api", () => "Hello World!");
+
+//Forms part
+
+//Gets all forms from database.
 app.MapGet("/api/formlist", () => GetForms());
 
+//Sends all forms to database, and an automation mail will come to your email with a link to chat.
 app.MapPost("/api/forms", async (Form form, EmailService emailService) =>
 {
     var token = Guid.NewGuid();
@@ -29,15 +34,15 @@ app.MapPost("/api/forms", async (Form form, EmailService emailService) =>
     
     // Creating the email body with a link (this is the "Join Chat" link part)
     var body = $@"
-Hello {form.email},
+    Hello {form.email},
 
-Thank you for your submission! 
+    Thank you for your submission! 
 
-To join the chat, click the link below:
-<a href='http://localhost:4000/chat/{token}'>Join Chat</a>
+    To join the chat, click the link below:
+    <a href='http://localhost:4000/chat/{token}'>Join Chat</a>
 
-Best regards,
-CRM Team";
+    Best regards,
+    CRM Team";
 
     // Send the email
     emailService.SendEmail(form.email, subject, body);
@@ -71,6 +76,7 @@ async Task<List<Form>> GetForms()
     return forms;  // Return the list of forms
 }
 
+//Adds forms in database, including a token that is unique for each chat.
 async Task AddForm(string email, string service_product, string message, Guid token)
 {
     if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(service_product)  || string.IsNullOrWhiteSpace(message))
@@ -106,8 +112,12 @@ async Task AddForm(string email, string service_product, string message, Guid to
 
 }
 
+//Agents part
+
+//Gets all agents from database.
 app.MapGet("/api/agents", async () => await AgentsList.GetAllAgents(db));
 
+//Inserts agent to database, the agent will get a welcoming email, with the oppurtonity to change their password.
 app.MapPost("/api/agents", async (AgentsList agent, EmailService emailService) =>
 {
     await AddAgent(agent.Firstname, agent.Lastname, agent.Email, agent.Password);
@@ -115,16 +125,16 @@ app.MapPost("/api/agents", async (AgentsList agent, EmailService emailService) =
     
     // Creating the email body with a link (this is the "Join Chat" link part)
     var body = $@"
-Hello {agent.Email},
+    Hello {agent.Email},
 
-Welcome to this CRM system! 
-Your current password is: {agent.Password}
+    Welcome to this CRM system! 
+    Your current password is: {agent.Password}
 
-If you want to change your password, click the link below:
-<a href='http://localhost:4000/changepassword'>Change Password</a>
+    If you want to change your password, click the link below:
+    <a href='http://localhost:4000/changepassword'>Change Password</a>
 
-Best regards,
-CRM Team";
+    Best regards,
+    CRM Team";
 
     // Send the email
     emailService.SendEmail(agent.Email, subject, body);
@@ -132,6 +142,7 @@ CRM Team";
     return Results.Ok(new { message = "Form has been saved and email sent"});
 });
 
+//Adds agent in database, you have to fill in your firstname, lastname, email and password.
 async Task AddAgent(string firstname, string lastname, string email, string password)
 { 
     
@@ -151,25 +162,29 @@ async Task AddAgent(string firstname, string lastname, string email, string pass
     await cmd.ExecuteNonQueryAsync();
 }
 
-// Correct the delete route here
+// Correct the delete route here.
 app.MapDelete("/api/agents/{id}", async (int id) =>
 {
     await DeleteAgent(id);
     return Results.Ok(new { message = "Agent has been deleted" });
 });
 
+// Deletes an agent.
 async Task DeleteAgent(int id)
 {
     await using var cmd = db.CreateCommand("UPDATE agents SET is_deleted = true, deleted_at = NOW() WHERE id = @id");
     cmd.Parameters.AddWithValue("@id", id);
     await cmd.ExecuteNonQueryAsync();
 }
+
+//Updates an agents credentials.
 app.MapPut("/api/agents/{id}", async (int id, AgentsList updatedAgent) =>
 {
     await UpdateAgent(id, updatedAgent.Firstname, updatedAgent.Lastname, updatedAgent.Email, updatedAgent.Password);
     return Results.Ok(new { message = "Agent has been updated" });
 });
 
+//Updates
 async Task UpdateAgent(int id, string firstname, string lastname, string email, string password)
 {
     if (string.IsNullOrWhiteSpace(firstname) || string.IsNullOrWhiteSpace(lastname) || 
@@ -189,6 +204,8 @@ async Task UpdateAgent(int id, string firstname, string lastname, string email, 
 
     await cmd.ExecuteNonQueryAsync();
 }
+
+//ServiceList part, this is a list that joins forms table with agent table.
 app.MapGet("/api/service_list", () => GetList());
 
 async Task<List<ServiceList>> GetList()
@@ -214,6 +231,7 @@ async Task<List<ServiceList>> GetList()
     }
 }
 
+//You can delete a service.
 async Task DeleteList(int id)
 {
     await using var cmd = db.CreateCommand("DELETE FROM service_list WHERE id = @id");
@@ -226,7 +244,9 @@ app.MapDelete("/api/service_list/{id}", async (int id) =>
     return Results.Ok(new { message = "Tjänst has been deleted" });
 });
 
+//Chat part
 
+//Inserts messages från chat in database. Every message is connected to token and form id.
 app.MapPost("/api/chat/{token}", async (string token,Messages message) =>
 {
     await AddMessage(message.message, message.username, token);
@@ -234,6 +254,7 @@ app.MapPost("/api/chat/{token}", async (string token,Messages message) =>
 });
 app.MapGet("/api/messages/{token}", (string token) => GetMessages(token));
 
+// Add messages
 async Task AddMessage(string message, string username, string token)
 {
     
@@ -247,7 +268,7 @@ async Task AddMessage(string message, string username, string token)
     await cmd.ExecuteNonQueryAsync();
 }
 
-
+//Gets messages
 async Task<List<Messages>> GetMessages(string token)
 {
     var messages = new List<Messages>();
@@ -269,6 +290,8 @@ async Task<List<Messages>> GetMessages(string token)
     }
     return messages;
 }
+
+//Updates your password, when you write existing email.
 app.MapPut("/api/agents/password", async (UpdatePassword request) =>
 {
     if (string.IsNullOrWhiteSpace(request.email) || string.IsNullOrWhiteSpace(request.newPassword))
@@ -286,6 +309,8 @@ async Task UpdatePassword(string email, string newPassword)
     cmd.Parameters.AddWithValue("@password", newPassword);
     await cmd.ExecuteReaderAsync();
 }
+
+
 // Updated: Login endpoint
 app.MapPost("/api/login", async (LoginRequest loginRequest) =>
 {

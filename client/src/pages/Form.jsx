@@ -4,7 +4,7 @@ import LoginBar from "../components/LoginBar";
 
 function Form() {
   const nav = useNavigate();
-  const canvasRef = useRef(null); // Referencia al canvas
+  const canvasRef = useRef(null); 
 
   const [form, setForm] = useState({
     email: "",
@@ -42,7 +42,6 @@ function Form() {
     }
   };
 
-  // 🎨 Dibujar el fondo en el canvas
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -53,7 +52,6 @@ function Form() {
     const circles = [];
     const numCircles = 50;
 
-    // Crear círculos aleatorios
     for (let i = 0; i < numCircles; i++) {
       circles.push({
         x: Math.random() * canvas.width,
@@ -75,11 +73,9 @@ function Form() {
         ctx.fillStyle = circle.color;
         ctx.fill();
         
-        // Movimiento
         circle.x += circle.dx;
         circle.y += circle.dy;
 
-        // Rebotar en los bordes
         if (circle.x + circle.radius > canvas.width || circle.x - circle.radius < 0) {
           circle.dx *= -1;
         }
@@ -93,7 +89,6 @@ function Form() {
 
     animate();
     
-    // Redimensionar el canvas cuando cambia el tamaño de la ventana
     const handleResize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -105,7 +100,6 @@ function Form() {
 
   return (
     <>
-      {/* 🎨 Canvas en el fondo */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
       <LoginBar/>
 
@@ -124,7 +118,6 @@ function Form() {
         <p> &copy; 2025 CRM System. All rights reserved.</p>
       </footer>
 
-      {/* Estilos adicionales */}
       <style>{`
         .canvas-bg {
           position: fixed;

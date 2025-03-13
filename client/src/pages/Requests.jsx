@@ -4,7 +4,7 @@ import Navbar from "../components/Navbar";
 
 function Requests() {
   const nav = useNavigate();
-  const canvasRef = useRef(null); // Referencia al canvas
+  const canvasRef = useRef(null); 
   const [forms, setForms] = useState([]);
 
   useEffect(() => {
@@ -68,7 +68,6 @@ function Requests() {
     borderRadius: "4px",
   };
 
-  // 🎨 Efecto de fondo con ondas dinámicas
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -80,7 +79,6 @@ function Requests() {
     const numWaves = 5;
     const colors = ["rgba(255, 255, 255, 0.3)", "rgba(255, 255, 255, 0.2)", "rgba(255, 255, 255, 0.15)"];
 
-    // Crear ondas iniciales
     for (let i = 0; i < numWaves; i++) {
       waves.push({
         y: Math.random() * canvas.height,
@@ -108,7 +106,6 @@ function Requests() {
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // Animación de ondas
         wave.phase += wave.speed;
       });
 
@@ -128,7 +125,6 @@ function Requests() {
 
   return (
     <>
-      {/* 🎨 Canvas de fondo con ondas dinámicas */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
 
       <Navbar/>

@@ -17,7 +17,7 @@ function AdminPage() {
     const circles = [];
     const numCircles = 50;
 
-    // Crear círculos flotantes
+    // Floating circles
     for (let i = 0; i < numCircles; i++) {
       circles.push({
         x: Math.random() * canvas.width,
@@ -38,11 +38,10 @@ function AdminPage() {
         ctx.fillStyle = circle.color;
         ctx.fill();
 
-        // Mover círculos
+        // Moving circles
         circle.x += circle.speedX;
         circle.y += circle.speedY;
 
-        // Cambiar dirección si llega a los bordes
         if (circle.x + circle.radius > canvas.width || circle.x - circle.radius < 0) {
           circle.speedX *= -1;
         }
@@ -67,7 +66,6 @@ function AdminPage() {
 
   return (
     <>
-      {/* Canvas de fondo con círculos flotantes */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
 
       <AdminBar/>

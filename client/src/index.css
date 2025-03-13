@@ -13,10 +13,6 @@ body{
   background-color: transparent;
 }
 
-/*Header som är samma varje sida*/
-
-
-
 .logoPlacement{
   display: flex;
   flex-direction: row;  
@@ -35,6 +31,7 @@ body{
 .sidebutton :hover{
   background-color: rgba(179, 179, 181, 0.312);
 }
+
 /*Footer som är samma varje sida*/
 
 footer{
@@ -118,8 +115,8 @@ textarea{
 .loginArea{
   display: flex;
   background: #00b09b;  /* fallback for old browsers */
-background: -webkit-linear-gradient(to top, #96c93d, #00b09b);  /* Chrome 10-25, Safari 5.1-6 */
-background: linear-gradient(to top, #96c93d, #00b09b); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: -webkit-linear-gradient(to top, #96c93d, #00b09b);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to top, #96c93d, #00b09b); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
   border-radius: 8px;
   flex-direction: column;
@@ -191,6 +188,7 @@ p{
   color: white;
 }
 
+/*Chat page*/
 
 .chatArea{
   display: flex;
@@ -251,11 +249,12 @@ h6 strong{
   margin-bottom: 5px;
 }
 
+/*Change Password page*/
 .passwordArea{
   display: flex;
   background: #00b09b;  /* fallback for old browsers */
-background: -webkit-linear-gradient(to top, #fc5f5f, #e70f0f);  /* Chrome 10-25, Safari 5.1-6 */
-background: linear-gradient(to top, #fc5f5f, #e70f0f); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: -webkit-linear-gradient(to top, #fc5f5f, #e70f0f);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to top, #fc5f5f, #e70f0f); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
   border-radius: 8px;
   flex-direction: column;

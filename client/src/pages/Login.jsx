@@ -43,15 +43,12 @@ function Login() {
         ctx.fillStyle = p.color;
         ctx.fill();
 
-        // Movimiento
         p.x += p.vx;
         p.y += p.vy;
 
-        // Rebotar en los bordes
         if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
         if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
 
-        // Conectar partículas cercanas
         for (let j = i + 1; j < particles.length; j++) {
           const p2 = particles[j];
           const dx = p.x - p2.x;
@@ -115,7 +112,6 @@ function Login() {
 
   return (
     <>
-      {/* 🎨 Canvas de fondo */}
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
       <LoginBar/>
 
