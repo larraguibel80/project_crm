@@ -298,16 +298,24 @@ app.MapPut("/api/agents/password", async (UpdatePassword request) =>
     {
         return Results.BadRequest(new { message = "Fyll i email och ditt nya lösenord" });
     }
-    await UpdatePassword(request.email, request.newPassword);
+
+    var update = await UpdatePassword(request.email, request.newPassword);
+    
+    if (!update)
+    {
+        return Results.NotFound();
+    }
     return Results.Ok(new { message = "You changed your password!"});
 });
 
-async Task UpdatePassword(string email, string newPassword)
+async Task<bool> UpdatePassword(string email, string newPassword)
 {
     await using var cmd = db.CreateCommand("UPDATE agents SET password = @password WHERE  email = @email");
     cmd.Parameters.AddWithValue("@email", email);
     cmd.Parameters.AddWithValue("@password", newPassword);
-    await cmd.ExecuteReaderAsync();
+   
+    var rowsAffected = await cmd.ExecuteNonQueryAsync();
+    return rowsAffected > 0;
 }
 
 
