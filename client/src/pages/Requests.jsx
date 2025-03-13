@@ -6,6 +6,7 @@ function Requests() {
   const nav = useNavigate();
   const canvasRef = useRef(null); 
   const [forms, setForms] = useState([]);
+  const [filters, setFilters] = useState("");
 
   useEffect(() => {
     const fetchForms = async () => {
@@ -36,6 +37,11 @@ function Requests() {
     nav(`/chat/${form.token}`)
   
   };
+
+  const formFilter = forms.filter((form) => 
+  form.email.toLowerCase().includes(filters.toLowerCase()) ||
+  form.service_product.toLowerCase().includes(filters.toLowerCase())
+);
 
   //  Table Styling
   const tableHeaderStyle = {
@@ -128,13 +134,15 @@ function Requests() {
       <canvas ref={canvasRef} className="canvas-bg"></canvas>
 
       <Navbar/>
+      <h2>Submitted Forms</h2>
+      <input className="filter" type="text" placeholder="Search for specific email or product/service" value={filters} onChange={(e) => setFilters(e.target.value)}/>
 
       <main>
-      {forms.length === 0 ? (
+      {formFilter.length === 0 ? (
           <p>No forms submitted yet.</p>
         ) : (
           <div>
-            <h2>Submitted Forms</h2>
+            
             <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px" }}>
               <thead>
                 <tr>
@@ -146,7 +154,7 @@ function Requests() {
                 </tr>
               </thead>
               <tbody>
-                {forms.map((form, index) => (
+                {formFilter.map((form, index) => (
                   <tr key={index} style={index % 2 === 0 ? tableRowEven : tableRowOdd}>
                     <td style={tableCellStyle}>{form.email}</td>
                     <td style={tableCellStyle}>{form.service_product}</td>

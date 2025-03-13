@@ -277,3 +277,7 @@ h6 strong{
   border-radius: 5px;
   box-shadow: 2px 2px gray;
 }
+
+.filter{
+  width: 100%;
+}

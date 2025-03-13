@@ -9,7 +9,7 @@ namespace server
         public string Lastname { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-        
+
 
         // Constructor
         public AgentsList(int id, string firstname, string lastname, string email, string password)
@@ -31,14 +31,15 @@ namespace server
                 while (await reader.ReadAsync())
                 {
                     agents.Add(new AgentsList(
-                        reader.GetInt32(0),  // Id
+                        reader.GetInt32(0), // Id
                         reader.GetString(1), // Firstname
                         reader.GetString(2), // Lastname
                         reader.GetString(3), // Email
-                        reader.GetString(4)  // Password
+                        reader.GetString(4) // Password
                     ));
                 }
             }
+
             return agents;
         }
     }

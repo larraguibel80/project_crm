@@ -39,7 +39,7 @@ app.MapPost("/api/forms", async (Form form, EmailService emailService) =>
     Thank you for your submission! 
 
     To join the chat, click the link below:
-    <a href='http://localhost:4000/chat/{token}'>Join Chat</a>
+    <a href='http://localhost:4004/chat/{token}'>Join Chat</a>
 
     Best regards,
     CRM Team";
@@ -131,7 +131,7 @@ app.MapPost("/api/agents", async (AgentsList agent, EmailService emailService) =
     Your current password is: {agent.Password}
 
     If you want to change your password, click the link below:
-    <a href='http://localhost:4000/changepassword'>Change Password</a>
+    <a href='http://localhost:4004/changepassword'>Change Password</a>
 
     Best regards,
     CRM Team";
@@ -344,7 +344,7 @@ async Task<bool> AuthenticateUser(string email, string password, string role)
     }
     else if (role.Equals("Agent", StringComparison.OrdinalIgnoreCase))
     {
-        query = "SELECT * FROM agents WHERE email = @email AND password = @password";
+        query = "SELECT * FROM agents WHERE email = @email AND password = @password AND is_deleted = false";
     }
     else
     {
