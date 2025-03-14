@@ -25,7 +25,7 @@ builder.Services.AddSession(options =>
 builder.Services.AddAuthorization();
 
 // Add CORS policy
-builder.Services.AddCors(options =>
+/*builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
@@ -34,7 +34,7 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
             .AllowCredentials();
     });
-});
+});*/
 
 // Add controllers
 builder.Services.AddControllers(); // Add this line to fix the error
@@ -46,6 +46,24 @@ Database database = new Database();
 NpgsqlDataSource db = database.Connection();
 app.UseCors("AllowFrontend");
 app.UseSession();
+
+
+
+// Manually allow CORS for your React frontend
+app.Use(async (context, next) =>
+{
+    context.Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:5174");
+    context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+    if (context.Request.Method == "OPTIONS") 
+    {
+        context.Response.StatusCode = 200;
+        return;
+    }
+
+    await next();
+});
 
 app.UseAuthorization(); // If using authentication
 app.MapControllers();   // If using controllers
