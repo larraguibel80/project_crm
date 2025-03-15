@@ -13,6 +13,7 @@ function Chat() {
       username: ""
     });
     const [messages, setMessages] = useState([]);
+    const [userameCheck, setusernamCheck ] = useState(false);
     
 
     useEffect(() => {
@@ -47,7 +48,7 @@ function Chat() {
     };
 
     const handleSubmit = async () => {
-      if (message.message === "") {
+      if (message.message === ""|| message.username === "") {
         console.error("You cannot send an empty message");
         return;
       }
@@ -74,6 +75,12 @@ function Chat() {
         console.error("Wrong connection with server", error);
       }
     };
+
+    const handleUsernameCheck = () => {
+      if(message.username !== ""){
+        setusernamCheck(true);
+      }
+    }
 
 
   // Background effect with floating squares
@@ -162,7 +169,7 @@ function Chat() {
             </div>
 
             <div className="messageArea">
-              <input type="text" name="username" placeholder="Enter username" value={message.username} onChange={handleChange}/>
+              <input type="text" name="username" placeholder="Enter username" value={message.username} onChange={handleChange} disabled={userameCheck} onBlur={handleUsernameCheck}/>
               <input type="message" name="message" placeholder="Write your message here" value={message.message} onChange={handleChange}/>
               <button onClick={handleSubmit}>Send</button>
             </div>
