@@ -56,12 +56,92 @@ Create the PostgreSQL database and tables required by the CRM.
    Open your terminal or command prompt and execute the following commands:
 
    ```
-   psql -U your_username
+   psql -U your_username (ours is postgres)
 
-   Then, in the PostgreSQL prompt:
+   Then, create the following tables:
 
-``` CREATE DATABASE crm_db;
-\c crm_db;
+``` 
+-- Create "companies" table
+CREATE TABLE companies (
+    id SERIAL PRIMARY KEY,
+    name TEXT,
+    address TEXT
+);
+
+-- Create "admins" table
+CREATE TABLE admins (
+    id SERIAL PRIMARY KEY,
+    firstname TEXT,
+    lastname TEXT,
+    email TEXT,
+    password TEXT,
+    company_id INTEGER,
+    FOREIGN KEY (company_id) REFERENCES companies(id)
+);
+
+-- Create "agents" table
+CREATE TABLE agents (
+    id SERIAL PRIMARY KEY,
+    firstname TEXT,
+    lastname TEXT,
+    email TEXT,
+    password TEXT,
+    company_id INTEGER,
+    is_deleted BOOLEAN DEFAULT FALSE,
+    deleted_at TIMESTAMP,
+    FOREIGN KEY (company_id) REFERENCES companies(id)
+);
+
+-- Create "chat" table
+CREATE TABLE chat (
+    id SERIAL PRIMARY KEY,
+    message TEXT NOT NULL,
+    username TEXT NOT NULL,
+    token TEXT,
+    form_id INTEGER,
+    FOREIGN KEY (form_id) REFERENCES forms(id)
+);
+
+-- Create "employees" table
+CREATE TABLE employees (
+    id SERIAL PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL DEFAULT 'customer service'
+);
+
+-- Create "forms" table
+CREATE TABLE forms (
+    id SERIAL PRIMARY KEY,
+    email TEXT NOT NULL,
+    service_product TEXT NOT NULL,
+    message TEXT NOT NULL,
+    created TIMESTAMP DEFAULT NOW(),
+    token TEXT,
+    company_id INTEGER,
+    FOREIGN KEY (company_id) REFERENCES companies(id)
+);
+
+-- Create "service_list" table
+CREATE TABLE service_list (
+    id SERIAL PRIMARY KEY,
+    form_id INTEGER,
+    agent_id INTEGER,
+    FOREIGN KEY (form_id) REFERENCES forms(id) ON DELETE CASCADE,
+    FOREIGN KEY (agent_id) REFERENCES agents(id) ON DELETE CASCADE
+);
+
+-- Create "users" table
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL CHECK (role IN ('admin', 'customer', 'customer_service')),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 ```
 Clone the Repository:
 
