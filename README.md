@@ -47,3 +47,79 @@ dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL
 dotnet add package Microsoft.Extensions.Configuration
 dotnet add package Microsoft.Extensions.Configuration.Json
 dotnet add package Microsoft.Extensions.DependencyInjection
+
+
+Create the PostgreSQL database and tables required by the CRM.
+
+- **Create Database and Tables:**
+
+   Open your terminal or command prompt and execute the following commands:
+
+   ```
+   psql -U your_username
+
+   Then, in the PostgreSQL prompt:
+
+``` CREATE DATABASE crm_db;
+\c crm_db;
+```
+Clone the Repository:
+
+```
+git clone https://github.com/larraguibel80/project_crm.git
+cd project_crm
+```
+
+install the following packages
+```
+dotnet add package Npgsql
+dotnet add package MailKit
+dotnet add package Microsoft.Extensions.Configuration
+```
+
+
+Configure appsettings.json:
+```
+{
+  "SmtpSettings": {
+    "Host": "smtp.your-email-provider.com",
+    "Port": "587",
+    "Username": "your-email@example.com",
+    "Password": "your-email-password"
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Database=crm_db;Username=your_username;Password=your_password"
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information"
+    }
+  }
+}
+```
+
+Run the Backend:
+```
+dotnet run
+```
+- **Frontend Setup (React)**
+Navigate to the Frontend Directory:
+
+```
+cd client
+```
+
+Install Dependencies:
+
+```
+npm install
+```
+N.B. Explicit installation of vite might be necessary (npm install vite)
+
+
+Start React Application:
+```
+npm run dev
+```
+
+The React frontend will be available at http://localhost:3000.
