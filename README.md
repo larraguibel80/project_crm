@@ -58,73 +58,7 @@ Create the PostgreSQL database and tables required by the CRM.
    ```
    psql -U your_username (ours is postgres)
 
-   Then, create the following tables:
-
-``` 
--- Create "companies" table
-CREATE TABLE companies (
-    id SERIAL PRIMARY KEY,
-    name TEXT,
-    address TEXT
-);
-
--- Create "admins" table
-CREATE TABLE admins (
-    id SERIAL PRIMARY KEY,
-    firstname TEXT,
-    lastname TEXT,
-    email TEXT,
-    password TEXT,
-    company_id INTEGER,
-    FOREIGN KEY (company_id) REFERENCES companies(id)
-);
-
--- Create "agents" table
-CREATE TABLE agents (
-    id SERIAL PRIMARY KEY,
-    firstname TEXT,
-    lastname TEXT,
-    email TEXT,
-    password TEXT,
-    company_id INTEGER,
-    is_deleted BOOLEAN DEFAULT FALSE,
-    deleted_at TIMESTAMP,
-    FOREIGN KEY (company_id) REFERENCES companies(id)
-);
-
--- Create "chat" table
-CREATE TABLE chat (
-    id SERIAL PRIMARY KEY,
-    message TEXT NOT NULL,
-    username TEXT NOT NULL,
-    token TEXT,
-    form_id INTEGER,
-    FOREIGN KEY (form_id) REFERENCES forms(id)
-);
-
-
-
--- Create "forms" table
-CREATE TABLE forms (
-    id SERIAL PRIMARY KEY,
-    email TEXT NOT NULL,
-    service_product TEXT NOT NULL,
-    message TEXT NOT NULL,
-    created TIMESTAMP DEFAULT NOW(),
-    token TEXT,
-    company_id INTEGER,
-    FOREIGN KEY (company_id) REFERENCES companies(id)
-);
-
--- Create "service_list" table
-CREATE TABLE service_list (
-    id SERIAL PRIMARY KEY,
-    form_id INTEGER,
-    agent_id INTEGER,
-    FOREIGN KEY (form_id) REFERENCES forms(id) ON DELETE CASCADE,
-    FOREIGN KEY (agent_id) REFERENCES agents(id) ON DELETE CASCADE
-);
-
+   Then, check the dump file for the database (see  learnpoint inlämning)
 
 
  **N.B.**  The following tables are relevant to the earlier stages of the 'chat_email_link' branch. Not creating them does not affect the main branch
@@ -189,6 +123,8 @@ Run the Backend:
 ```
 dotnet run
 ```
+backend runs on http://localhost:3000
+
 - **Frontend Setup (React)**
 Navigate to the Frontend Directory:
 
@@ -209,4 +145,13 @@ Start React Application:
 npm run dev
 ```
 
-The React frontend will be available at http://localhost:3000.
+The React frontend will be available at http://localhost:4000 which leads to the form to be filled with email, subject and message.
+ - Clicking on 'Send' will trigger the Mailkit System and enable the sending of a link containing a unique code to the used email address.
+Clicking on the link received via email redirects the user to the chat page where commmunication with a customer service representative
+is enabled.
+
+- http://localhost:4000/login allows customer service employees to verify their credential and access the same chat initiated by the customer.
+- Admin can login and get access to all cases and manage them and those assigned to them by rearranging, deleting info and adding others. 
+- Adding new employees enables the Mailkit system into sending them a link where they can change their initial password
+
+Additonal details are in the user stories
