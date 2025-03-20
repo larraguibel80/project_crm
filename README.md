@@ -6,7 +6,7 @@ This project is a CRM system built with **ASP.NET Core** (backend), **PostgreSQL
 
 ## **Technologies Used**
 
-- **.NET 6 or 7 (ASP.NET Core)** – Backend API  
+- **.NET 8** – Backend API  
 - **MailKit** – For sending emails via SMTP  
 - **MimeKit** – For constructing email messages  
 - **Entity Framework Core (EF Core)** – For database access  
@@ -102,15 +102,7 @@ CREATE TABLE chat (
     FOREIGN KEY (form_id) REFERENCES forms(id)
 );
 
--- Create "employees" table
-CREATE TABLE employees (
-    id SERIAL PRIMARY KEY,
-    first_name VARCHAR(100) NOT NULL,
-    last_name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    role VARCHAR(50) NOT NULL DEFAULT 'customer service'
-);
+
 
 -- Create "forms" table
 CREATE TABLE forms (
@@ -133,6 +125,10 @@ CREATE TABLE service_list (
     FOREIGN KEY (agent_id) REFERENCES agents(id) ON DELETE CASCADE
 );
 
+
+
+ **N.B.**  The following tables are relevant to the earlier stages of the 'chat_email_link' branch. Not creating them does not affect the main branch
+
 -- Create "users" table
 CREATE TABLE users (
     user_id SERIAL PRIMARY KEY,
@@ -143,6 +139,17 @@ CREATE TABLE users (
 );
 
 ```
+-- Create "employees" table
+CREATE TABLE employees (
+    id SERIAL PRIMARY KEY,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL DEFAULT 'customer service'
+);
+
+
 Clone the Repository:
 
 ```
