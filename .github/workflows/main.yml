@@ -1,0 +1,28 @@
+name: Kör tester för project_crm
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Klona repo
+      uses: actions/checkout@v3
+    - name: Installera .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.x'
+    - name: Kör enhetstester
+      run: dotnet test ./Testkod/Enhetstester
+    - name: Installera Node.js och Playwright
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.x'
+    - name: Kör GUI-tester
+      run: |
+        cd Testkod/GUI-tester
+        npm install
+        npx playwright install
+        npx playwright test
